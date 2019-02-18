@@ -15,12 +15,15 @@ import math as ma
 import os as OS
 
 class PSD_Class:
-    def corr(self, Lag,Vec):
-    	self.Lag=Lag
-    	U_uni1=Vec
+    def __init__(self, func):
+        self.func = func
+
+    def corr(self, Lag, Vec):
+    	Lag = len(self.func)
+    	U_uni1= self.func
     	#U_uni1=np.mean(U_uni1)
     	Corr=[]
-    	for i in range(len(self.Lag)):
+    	for i in range(len(Lag)):
     		sum1=0
     		U1=U_uni1[0:(len(Vec)-i)]
     		U2=U_uni1[(i):len(Vec)]
@@ -30,7 +33,7 @@ class PSD_Class:
     		Corr.append(sum1)
     	return np.asarray(Corr)
     
-    def PSD(U1,V1,Time1):##V1,Z1,Time1):
+    def PSD(self,U1,V1,Time1):##V1,Z1,Time1):
     	U=U1
     	U=U#-np.mean(U)
     	V=V1
@@ -114,6 +117,8 @@ class PSD_Class:
     	mp.ylim([10**-8,10**1])
     	mp.legend(loc='best')
     	mp.savefig('DNS_LES_2.png',dpi=300,format='png')
-    
+        
     	mp.show()
-    OS.remove('PSD.pyc')
+#    OS.remove('PSD.pyc')
+
+nois = np.random.normal(0,1,1000)
