@@ -16,7 +16,11 @@ import os as OS
 from statsmodels.tsa.stattools import acf
 import scipy.optimize
 
+filename = 'PSI_TSERIES.csv' #input("Input file (include extension but not apostraphes) = ")
+
 funct = np.random.normal(0,1,1000) #Put whatever the signal is here
+funct2 = np.random.normal(0,1,1000)
+
 
 class PSD_Class:
     def __init__(self, func):
@@ -72,10 +76,11 @@ class PSD_Class:
     	 CorrU=CorrU/np.max(CorrU)
     	 CorrV=CorrV/np.max(CorrV)
     	 #CorrZ=CorrZ#/np.max(CorrZ)
-    	 mp.plot(CorrU[0:1150],label='LES')
     	 mp.plot(CorrV[0:1150],label='DNS')
-    	 #mp.plot(CorrZ,label='CorrZ')
+    	 mp.plot(CorrU[0:1150],label='LES')
     	 mp.legend(loc='best')
+    	 #mp.plot(CorrZ,label='CorrZ')
+#    	 mp.legend(loc='best')
     	 mp.xlabel('Lag')
     	 mp.ylabel('Autocorrelation')
     	 mp.savefig('Autocorr.png',dpi=300,format='png')
@@ -124,7 +129,7 @@ class PSD_Class:
     #    OS.remove('PSD.pyc')
     
     
-    def Taylor(self, dt):
+    def Taylor(self, dt, file):
         mp.style.use('ggplot')
         mp.rcParams['axes.linewidth'] = 2
         #mp.rcParams['text.usetex'] = True
@@ -135,9 +140,9 @@ class PSD_Class:
         mp.rcParams.update({'legend.fontsize': 15,
                   'legend.handlelength': 2})
         mp.tick_params(axis='both', which='major', labelsize=12)
-        df=pd.read_csv('PSI_TSERIES.csv')
+        df=pd.read_csv(str(file))
         P=df.values
-        A=P[:,50]
+        A=P[:,np.random.randint(0,len(df.columns))]
         A=pd.Series(A)
         A=A.diff(periods=4)
         A=A.dropna()
@@ -173,7 +178,7 @@ class PSD_Class:
                      arrowprops=dict(facecolor='red',lw=4,arrowstyle="<->"))
         mp.annotate(r'\textbf{$\lambda_{\tau}$}', xy=(0.2, 0.05), xycoords='data',
                      fontsize=15.0,textcoords='data',ha='center')
-        mp.ylim(-0.15,1.1)
+        mp.ylim(-0.3,1.1)
         mp.tight_layout()
         #mp.savefig('Taylor.png',dpi=300,format='png')
         mp.show()
@@ -182,9 +187,9 @@ class PSD_Class:
 
 
 
-dt = input("dt for Taylor Function = ")
+
+dt = 0.1 #input("dt for Taylor Function = ")
 y = PSD_Class(funct)
-y.PSD(funct,funct,np.arange(0,len(funct),1))
-mp.figure(10)
+y.PSD(funct,funct2,np.arange(0,len(funct),1))
 mp.plot(y.corr(funct))
-y.Taylor(dt)
+y.Taylor(dt,filename)
