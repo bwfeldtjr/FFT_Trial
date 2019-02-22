@@ -151,8 +151,6 @@ class PSD_Class:
         mp.show()
         
         dt=float(dt)
-        Taylor=[]
-        Time=[]
         ACF=acf(A,nlags=99)
         ACF=np.array(ACF)
         tau=np.arange(0,100)*dt
