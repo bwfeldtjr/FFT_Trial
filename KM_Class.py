@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Feb 27 14:40:01 2019
+Created on Fri Mar  1 13:33:57 2019
 
-@author: Brenden
+@author: bwfeldt
 """
 
 import seaborn as sns; #sns.set(color_codes=True)
@@ -41,7 +41,7 @@ class KM_Class:
     def exponential_fit(self,x, a, b, c):
         return a*np.exp(-b*x) + c
 
-    def KM(self,C,delta):# KM Analysis
+    def KM(self,C,delta,dt):# KM Analysis
     	std1=np.std(C)
 
 
@@ -53,10 +53,10 @@ class KM_Class:
     	Itemx1=[]
     	Itemy1=[]
     	prob=[]
-    	print (len(C))
+#    	print (len(C))
     	list2=np.arange(0,len(C),int(len(C)/200))#[i for i in range(0,len(C),20)]# int(len(C)/80))]# Divide in 50 segements
     	#print list2
-    	print (np.shape(list2))
+#    	print (np.shape(list2))
     	#print list2
 #    	KO=0
 #    
@@ -106,23 +106,23 @@ class KM_Class:
 
     	return(K,K1,K2,K4)
 
-    def Call(self,C):
+    def Call(self,C,dt):
        Datax=[]
        TEST=[]
        TEST2=[]	
        DataD=[]
        Tdiff=dt*np.arange(0,37)
-       print (Tdiff)
+#       print (Tdiff)
        for i in range(1,42):
-           print (i)
+#           print (i)
            delta=i
-           X,D,D1,D4= self.KM(C,delta)
+           X,D,D1,D4= self.KM(C,delta,dt)
            Datax.append(X)
            DataD.append(D)
        DataD=np.asarray(DataD)
        Datax=np.asarray(Datax)
        
-       print( np.shape(DataD))
+#       print( np.shape(DataD))
        D_new=[]
        for j in range(0,len(DataD[0,:])):
            Diffu=[]
@@ -132,7 +132,7 @@ class KM_Class:
            Tdiffn=np.linspace(0,37,100)*dt
            mp.plot(Tdiff,Diffu,'*')
     		#mp.show()
-           print( np.shape(Tdiff), np.shape(Diffu))
+#           print( np.shape(Tdiff), np.shape(Diffu))
            poly = Rbf(Tdiff, Diffu)#interpolate.splrep(Tdiff,Diffu)
     		#Diffu=interpolate.splev(Tdiffn, poly, der=0)
            Diffu=poly(Tdiffn)
@@ -171,82 +171,111 @@ class KM_Class:
        mp.show()
        return (Datax[0],D_new)
 
-y = KM_Class()
-#from bokeh.layouts import gridplot
-#from bokeh.plotting import figure, show, output_file
-Tseries=pd.read_csv('PSI_TSERIES.csv')#pd.read_csv('Data1.csv')
-#Tseries2=pd.read_csv('PSI_TSERIES_2.csv')
-#Tseries2=Tseries2.values
-print (np.shape(Tseries))
-RAW=Tseries.values
-RAW=RAW[:,50]
-Tseries=Tseries.values
-#mp.imshow(Tseries)
-#mp.show()
-mp.plot(Tseries[:,50])
-mp.show()
-Tseries=Tseries[:,50]#Tseries[:,1]
-#np.savetxt('Original.csv',Tseries)
-Tseries=pd.Series(Tseries)
-#mp.plot(Tseries2[0:1200],color='red')
-#mp.plot(Tseries[0:1200])
-mp.show()
-#Tseries_new=Tseries.diff(periods=20)
-#Tseries_new=Tseries_new.dropna()
-Tseries=Tseries.diff(periods=5)
-
-Tseries=Tseries.dropna()
-
-#smooth=smooth.values
-Tseries=Tseries.values
-mp.plot(acf(Tseries,nlags=30))
-mp.plot(acf(RAW,nlags=30),color='red')
-mp.show()
-#Tseries=Tseries[0:2200]
-print (np.shape(Tseries))
-mp.figure(figsize=(20,5))
-mp.plot(Tseries)
-#mp.plot(np.arange(0,120-4/10.0,0.1),Tseries[0:1200],color='black',linewidth=4)
-mp.xlabel(r'Time',fontsize=20)
-mp.ylabel(r'Velocity',fontsize=20)
-
-mp.show()
-
-print (np.shape(Tseries))
-Diff=0.01
-drift=0.001
-X_i=0
-T=100.0
-dt=0.1
-sample=int(T/dt)
-C=[]
-time=[]
-t=0
-
-Diffusion=[]
-X_spa=[]
-for i in range(0,1):
-	C=Tseries#[:,128]#-np.mean(Tseries[:,128])#[128,:]-np.mean(Tseries[128,:])
-	X,Diff= y.Call(C)
-	X_spa.append(X)
-	Diffusion.append(Diff)
-	mp.plot(C,'*')
-	#mp.plot(Tseries2)
-	mp.show()
-
-for i in range(0,1):
-		print (np.shape(X_spa[i]))
-		mp.plot(X_spa[i],Diffusion[i],'o',label='thing')
-	#mp.ylim([1.25,2])
-mp.legend(loc='best')
-#mp.savefig('Diffusion.png',dpi=300,format='png')
-mp.show()
-Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
-df=pd.DataFrame(Diffusion)
-
-K=pd.DataFrame(C)
-dl=1000
-Mean=[]
-tau=np.array([1,10,100,900])
-
-
+    def Everything_else(self,filename,dt):
+        #from bokeh.layouts import gridplot
+        #from bokeh.plotting import figure, show, output_file
+        Tseries=pd.read_csv(str(filename))#pd.read_csv('Data1.csv')
+        #Tseries2=pd.read_csv('PSI_TSERIES_2.csv')
+        #Tseries2=Tseries2.values
+        #print (np.shape(Tseries))
+        RAW=Tseries.values
+        RAW=RAW[:,50]
+        Tseries=Tseries.values
+        #mp.imshow(Tseries)
+        #mp.show()
+        #mp.plot(Tseries[:,50])
+        #mp.show()
+        Tseries=Tseries[:,50]#Tseries[:,1]
+        #np.savetxt('Original.csv',Tseries)
+        Tseries=pd.Series(Tseries)
+        #mp.plot(Tseries2[0:1200],color='red')
+        #mp.plot(Tseries[0:1200])
+        #mp.show()
+        #Tseries_new=Tseries.diff(periods=20)
+        #Tseries_new=Tseries_new.dropna()
+        Tseries=Tseries.diff(periods=5)
+        
+        Tseries=Tseries.dropna()
+        
+        #smooth=smooth.values
+        Tseries=Tseries.values
+        mp.plot(acf(Tseries,nlags=30))
+        mp.plot(acf(RAW,nlags=30),color='red')
+        mp.title('Auto-Correlation')
+        mp.legend(('Tseries','RAW'))
+        mp.xlabel('Lag')
+        mp.show()
+        #Tseries=Tseries[0:2200]
+        #print (np.shape(Tseries))
+        mp.figure(figsize=(20,5))
+        mp.plot(Tseries)
+        #mp.plot(np.arange(0,120-4/10.0,0.1),Tseries[0:1200],color='black',linewidth=4)
+        mp.title('T Series')
+        mp.xlabel(r'Time',fontsize=20)
+        mp.ylabel(r'Velocity',fontsize=20)
+        
+        mp.show()
+        
+        #print (np.shape(Tseries))
+        Diff=0.01
+        drift=0.001
+        X_i=0
+        T=100.0
+        dt=dt
+        sample=int(T/dt)
+        C=[]
+        time=[]
+        t=0
+        
+        Diffusion=[]
+        X_spa=[]
+        for i in range(0,1):
+            C=Tseries#[:,128]#-np.mean(Tseries[:,128])#[128,:]-np.mean(Tseries[128,:])
+            X,Diff= self.Call(C,dt)
+            X_spa.append(X)
+            Diffusion.append(Diff)
+            mp.plot(C,'*')
+            mp.legend('Tseries')
+            #mp.plot(Tseries2)
+            mp.show()
+        
+        for i in range(0,1):
+        #		print (np.shape(X_spa[i]))
+        		mp.plot(X_spa[i],Diffusion[i],'o',label='legend')
+        	#mp.ylim([1.25,2])
+        mp.legend(loc='best')
+        #mp.savefig('Diffusion.png',dpi=300,format='png')
+        mp.show()
+        #Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
+        #df=pd.DataFrame(Diffusion)
+        
+        #K=pd.DataFrame(C)
+        #dl=1000
+        #Mean=[]
+        #tau=np.array([1,10,100,900])
+        
+        #	K=pd.DataFrame(C)
+        #	K=K.diff(periods=tau[i])
+        #	K=K.dropna(axis=0)
+        #	mean=K.mean(axis=0)
+        #	mean=mean.values/(dt*tau[i])
+        #	Mean.append(np.array(mean))
+        
+        #	K=K.values
+        
+        #	K=K.reshape(-1,1)
+        
+        #	kde = KernelDensity(bandwidth=0.1, kernel='gaussian')
+        #	kde.fit(K[0:np.size(K)/2])
+        
+        #	logprob = kde.score_samples(K[:])
+        #	mp.plot(K/np.std(K),np.exp(logprob),'o',label=str(tau[i]))
+        #mp.ylabel(r'$Probability$')
+        #mp.xlabel(r'$x$')
+        #mp.title(r'$Probability$')
+        #mp.legend(loc='best')
+        #mp.savefig('Diff4.png',dpi=300,format='png')
+        
+        
+        
+        #mp.show()
