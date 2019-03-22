@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb 18 12:25:20 2019
+Created on Tue Feb 19 14:00:50 2019
 
-@author: bwfeldt
+@author: Brenden
 """
-
+from ggplot import *
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as mp
@@ -17,7 +17,7 @@ from statsmodels.tsa.stattools import acf
 import scipy.optimize
 
 filename = 'PSI_TSERIES.csv' #input("Input file (include extension but not apostraphes) = ")
-mp.style.use('ggplot')
+#mp.style.use('ggplot')
 
 class PSD_Class:
 #    def __init__(self, func):
@@ -82,6 +82,9 @@ class PSD_Class:
     	 mp.ylabel('Autocorrelation')
     	 mp.savefig('Autocorr.png',dpi=300,format='png')
     	 mp.show()
+    	 CoorUV = pd.DataFrame({'len':np.arange(0,len(CorrU)),'C':CorrU,'D':CorrV})        
+    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='len', y='D'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'len',y='C'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
+    	 print(tes2)
     	 print("Computing energy spectrum...")
     	 yf = np.fft.fft(CorrU)#+np.fft.fft(CorrV)+np.fft.fft(CorrZ)
     	 yf1= np.fft.fft(CorrV)
@@ -123,11 +126,13 @@ class PSD_Class:
 #    	 mp.savefig('DNS_LES_2.png',dpi=300,format='png')
         
     	 mp.show()
+    	 xfFF = pd.DataFrame({'x':xf,'y':FF,'z':FF1})
+    	 tes4 = ggplot(aes(),data=xfFF)+ geom_line(aes(x='x',y='y'),data = xfFF, color='blue') + geom_line(aes(x='x',y='z'),data = xfFF, color='green') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1)
+    	 print(tes4)
     #    OS.remove('PSD.pyc')
     
     
     def Taylor(self, dt, file):
-        mp.style.use('ggplot')
         mp.rcParams['axes.linewidth'] = 2
         #mp.rcParams['text.usetex'] = True
         mp.rcParams['text.latex.unicode'] = True
@@ -147,6 +152,10 @@ class PSD_Class:
         A=A.values
         mp.plot(A)
         mp.show()
+        
+        A = pd.DataFrame({'Trajectory':A,'Time':np.arange(0,len(A),1)})
+        tes = ggplot(aes(x = 'Time', y = 'Trajectory'),data=A) + geom_point() + geom_line()
+        print(tes)
 
         A2=P[:,np.random.randint(0,len(df.columns))]
         A2=pd.Series(A2)
@@ -154,14 +163,18 @@ class PSD_Class:
         A2=A2.dropna()
         A2=A2.values
 
-        self.PSD(A,A2,np.arange(0,len(A),1))
+        self.PSD(A['Trajectory'],A2,np.arange(0,len(A),1))
         
         dt=float(dt)
-        ACF=acf(A,nlags=99)
+        ACF=acf(A['Trajectory'],nlags=99)
         ACF=np.array(ACF)
         tau=np.arange(0,100)*dt
         mp.plot(tau,ACF)
         mp.show()
+        tauACF = pd.DataFrame({'a':ACF,'b':tau})
+
+        tes1 = ggplot(aes(x='b',y='a'), data = tauACF) + geom_point() + geom_line() + labs(x='tau',y='ACF',title = 'Autocorrelation Function')
+        print(tes1)
         print(ACF[10])
         osculating = lambda lamb: (ACF[1]-(1-tau[1]**2/lamb))**2
         
@@ -186,6 +199,7 @@ class PSD_Class:
         mp.tight_layout()
         #mp.savefig('Taylor.png',dpi=300,format='png')
         mp.show()
+
 
 
 #df=pd.read_csv(str(filename))
