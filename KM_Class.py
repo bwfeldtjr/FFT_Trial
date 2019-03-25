@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar  1 13:33:57 2019
+Created on Wed Feb 27 14:40:01 2019
 
-@author: bwfeldt
+@author: Brenden
 """
-
+from ggplot import *
 import seaborn as sns; #sns.set(color_codes=True)
 from scipy import stats
 from scipy import signal
@@ -109,7 +109,10 @@ class KM_Class:
     def Call(self,C,dt):
        Datax=[]
        TEST=[]
-       TEST2=[]	
+       TEST2=[]
+       TEST3 = []
+       TEST4 = []
+       TEST5 = []
        DataD=[]
        Tdiff=dt*np.arange(0,37)
 #       print (Tdiff)
@@ -131,6 +134,8 @@ class KM_Class:
                 Diffu.append(DataD[i][j])
            Tdiffn=np.linspace(0,37,100)*dt
            mp.plot(Tdiff,Diffu,'*')
+           TEST4.append(Tdiff)
+           TEST5.append(Diffu)
     		#mp.show()
 #           print( np.shape(Tdiff), np.shape(Diffu))
            poly = Rbf(Tdiff, Diffu)#interpolate.splrep(Tdiff,Diffu)
@@ -164,11 +169,16 @@ class KM_Class:
     		#mp.scatter(x, y)#  color='black')
            mp.plot(xnew, y_pred,'--')#, color='blue', linewidth=3)
            TEST2.append(xnew)
-           TEST2.append(y_pred)
+           TEST3.append(y_pred)
 
 #    		np.savetxt('REGR.txt',np.asarray(TEST))
 #    		np.savetxt('REGR1.txt',np.asarray(TEST2))
        mp.show()
+       
+       xynp = pd.DataFrame({'x':np.array(TEST2)[0,:],'y':np.array(TEST3)[0,:],'Tdiff':np.array(TEST2)[0,:]})#'Diffu':np.array(TEST5)[0,:]})
+       tes9 = ggplot(aes(x='x',y='y'), data = xynp) + geom_point()
+       print(tes9)
+       
        return (Datax[0],D_new)
 
     def Everything_else(self,filename,dt):
@@ -199,22 +209,36 @@ class KM_Class:
         
         #smooth=smooth.values
         Tseries=Tseries.values
-        mp.plot(acf(Tseries,nlags=30))
-        mp.plot(acf(RAW,nlags=30),color='red')
-        mp.title('Auto-Correlation')
-        mp.legend(('Tseries','RAW'))
-        mp.xlabel('Lag')
-        mp.show()
-        #Tseries=Tseries[0:2200]
-        #print (np.shape(Tseries))
-        mp.figure(figsize=(20,5))
-        mp.plot(Tseries)
-        #mp.plot(np.arange(0,120-4/10.0,0.1),Tseries[0:1200],color='black',linewidth=4)
-        mp.title('T Series')
-        mp.xlabel(r'Time',fontsize=20)
-        mp.ylabel(r'Velocity',fontsize=20)
-        
-        mp.show()
+
+# The Pyplot version of the autocorrelation
+#        mp.plot(acf(Tseries,nlags=30))
+#        mp.plot(acf(RAW,nlags=30),color='red')
+#        mp.title('Auto-Correlation')
+#        mp.legend(('Tseries','RAW'))
+#        mp.xlabel('Lag')
+#        mp.show()
+#        #Tseries=Tseries[0:2200]
+#        #print (np.shape(Tseries))
+
+#The GGPlot version of the autocorrelation        
+        RAWT = pd.DataFrame({'Lag':np.arange(0,31,1),'Tseries':acf(Tseries,nlags=30),'RAW':acf(RAW,nlags=30)})
+        tes5 = ggplot(aes(),data=RAWT) + geom_line(aes(x='Lag',y='Tseries'),data=RAWT,color = 'blue') + geom_line(aes(x='Lag',y='RAW'), data=RAWT, color = 'red') + labs(x='Lag',y=' ',title='Auto-correlation') #+ theme(legend.position = 'right')
+        print(tes5)
+
+#The Pyplot version of Tseries
+#        mp.figure(figsize=(20,5))
+#        mp.plot(Tseries)
+#        #mp.plot(np.arange(0,120-4/10.0,0.1),Tseries[0:1200],color='black',linewidth=4)
+#        mp.title('T Series')
+#        mp.xlabel(r'Time',fontsize=20)
+#        mp.ylabel(r'Velocity',fontsize=20)
+#        
+#        mp.show()
+
+#The GGPlot version of Tseries
+        TTS = pd.DataFrame({'Time':np.arange(0,len(Tseries)),'Tseries':Tseries})
+        tes8 = ggplot(aes(x='Time',y='Tseries'), data = TTS) + geom_line() + labs(y = 'Velocity',title = 'T Series')
+        print(tes8)
         
         #print (np.shape(Tseries))
         Diff=0.01
@@ -229,23 +253,38 @@ class KM_Class:
         
         Diffusion=[]
         X_spa=[]
+        C=Tseries#[:,128]#-np.mean(Tseries[:,128])#[128,:]-np.mean(Tseries[128,:])
         for i in range(0,1):
-            C=Tseries#[:,128]#-np.mean(Tseries[:,128])#[128,:]-np.mean(Tseries[128,:])
             X,Diff= self.Call(C,dt)
             X_spa.append(X)
             Diffusion.append(Diff)
-            mp.plot(C,'*')
-            mp.legend('Tseries')
-            #mp.plot(Tseries2)
-            mp.show()
+            
+# The Pyplot version of C
+#        mp.plot(C,'*')
+#        mp.legend('Tseries')
+#        #mp.plot(Tseries2)
+#        mp.show()
         
-        for i in range(0,1):
-        #		print (np.shape(X_spa[i]))
-        		mp.plot(X_spa[i],Diffusion[i],'o',label='legend')
-        	#mp.ylim([1.25,2])
-        mp.legend(loc='best')
-        #mp.savefig('Diffusion.png',dpi=300,format='png')
-        mp.show()
+#The GGPlot version of C        
+#        CCC = pd.DataFrame({'x':np.arange(0,len(C),1),'y':C})
+#        tes6 = ggplot(aes(x='x',y='y'), data=CCC) + geom_point()
+#        print(tes6)
+        
+
+# The Pyplot version of X_spa and Diffusion        
+#        for i in range(0,1):
+#        #		print (np.shape(X_spa[i]))
+#        		mp.plot(X_spa[i],Diffusion[i],'o',label='legend')
+#        	#mp.ylim([1.25,2])
+#        mp.legend(loc='best')
+#        #mp.savefig('Diffusion.png',dpi=300,format='png')
+#        mp.show()
+        
+
+#The GGPlot version of X_spa and Diffusion
+        XsD = pd.DataFrame({'X_Spa':np.array(X_spa)[0,:],'Diffusion':np.array(Diffusion)[0,:]})
+        tes7 = ggplot(aes(x='X_Spa',y='Diffusion'), data=XsD) + geom_point()
+        print(tes7)
         #Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
         #df=pd.DataFrame(Diffusion)
         
@@ -279,3 +318,5 @@ class KM_Class:
         
         
         #mp.show()
+
+
