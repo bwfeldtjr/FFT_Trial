@@ -29,13 +29,13 @@ from scipy.stats import norm, gaussian_kde
 from statsmodels.distributions.empirical_distribution import ECDF
 #sns.set(rc={'figure.figsize':(20,10)})
 #mp.style.use('ggplot')
-mp.rcParams['axes.linewidth'] = 20
-#mp.rcParams['text.usetex'] = True
-mp.rcParams['text.latex.unicode'] = True
-mp.rcParams['font.family'] = 'serif'
-mp.rcParams['axes.linewidth'] = 8
-mp.rcParams['text.latex.preamble'] = [r'\usepackage{sfmath} \boldmath']
-mp.tick_params(axis='both', which='major', labelsize=12)
+#mp.rcParams['axes.linewidth'] = 20
+##mp.rcParams['text.usetex'] = True
+#mp.rcParams['text.latex.unicode'] = True
+#mp.rcParams['font.family'] = 'serif'
+#mp.rcParams['axes.linewidth'] = 8
+#mp.rcParams['text.latex.preamble'] = [r'\usepackage{sfmath} \boldmath']
+#mp.tick_params(axis='both', which='major', labelsize=12)
 
 class KM_Class:
     def exponential_fit(self,x, a, b, c):
@@ -91,6 +91,17 @@ class KM_Class:
     	Itemx=np.array(Itemx)
     	Itemy=np.array(Itemy)
 
+#    	if delta==1:
+##    	    ax1=mp.subplots()
+##    	    ax1.set_ylim(-3,3)
+#    	    mp.tight_layout()
+#    	    g = sns.jointplot(Itemx/std1, Itemy/std1, kind='kde',data=None,xlim=(-2,2),ylim=(-2,2),n_levels=10)#.plot_joint(sns.kdeplot, zorder=20, n_levels=10)#sns.jointplot(Itemx, Itemy, kind="kde",n_levels=400)
+##    	    g.set_axis_ylim(-3,3)
+#    	    g.plot_joint(mp.scatter,color='red', s=200, linewidth=0.01, marker='+')
+#    	    g.set_axis_labels(r'$v/ \sigma$',r'$v^{\prime}/ \sigma$',fontsize=20)
+#    	    mp.tight_layout()
+#    	    #mp.savefig('Joint1.png',dpi=300,format='png',transparent=True)
+#    	    mp.show()
     	K=[]
     	K1=[]
     	K2=[]
@@ -108,76 +119,73 @@ class KM_Class:
 
     def Call(self,C,dt):
        Datax=[]
-       TEST=[]
-       TEST2=[]
-       TEST3 = []
-       TEST4 = []
-       TEST5 = []
        DataD=[]
        Tdiff=dt*np.arange(0,37)
-#       print (Tdiff)
+       #       print (Tdiff)
        for i in range(1,42):
-#           print (i)
+        #           print (i)
            delta=i
            X,D,D1,D4= self.KM(C,delta,dt)
            Datax.append(X)
            DataD.append(D)
        DataD=np.asarray(DataD)
        Datax=np.asarray(Datax)
-       
-#       print( np.shape(DataD))
+           
+        #       print( np.shape(DataD))
        D_new=[]
+       asdf = pd.DataFrame({'x':np.arange(0,5,1)})
+       hji = ggplot(aes(),data = asdf)
        for j in range(0,len(DataD[0,:])):
-           Diffu=[]
-           for i in range(0,37):
-    			#print np.shape(DataD[i])
-                Diffu.append(DataD[i][j])
+           Diffu=DataD[0:37,j]
+#           for i in range(0,37):
+#        		#print np.shape(DataD[i])
+#               Diffu.append(DataD[i][j])
            Tdiffn=np.linspace(0,37,100)*dt
-           mp.plot(Tdiff,Diffu,'*')
-           TEST4.append(Tdiff)
-           TEST5.append(Diffu)
-    		#mp.show()
-#           print( np.shape(Tdiff), np.shape(Diffu))
+#           mp.plot(Tdiff,Diffu,'*')
+           fgh = pd.DataFrame({'x' : Tdiff,'y' : Diffu})
+           hji += geom_point(aes(x='x',y='y'), data = fgh,shape='*', size=50,color='blue')
+            
+        		#mp.show()
+        #           print( np.shape(Tdiff), np.shape(Diffu))
            poly = Rbf(Tdiff, Diffu)#interpolate.splrep(Tdiff,Diffu)
-    		#Diffu=interpolate.splev(Tdiffn, poly, der=0)
+        	#Diffu=interpolate.splev(Tdiffn, poly, der=0)
            Diffu=poly(Tdiffn)
            x=np.asarray(Tdiffn[5:])#30
            y=np.asarray(Diffu[5:])
-    		#Tdiffn=Tdiff#np.linspace(0,41,100)*dt
-    		#poly = interpolate.splrep(Tdiff,Diffu)#agrange(Tdiff, Diffu)
-    		#Diffu=poly(Tdiffn)#interpolate.splev(Tdiffn, poly, der=0)
+        	#Tdiffn=Tdiff#np.linspace(0,41,100)*dt
+        	#poly = interpolate.splrep(Tdiff,Diffu)#agrange(Tdiff, Diffu)
+        		#Diffu=poly(Tdiffn)#interpolate.splev(Tdiffn, poly, der=0)
            regr =  make_pipeline(PolynomialFeatures(3), LinearRegression())#linear_model.LinearRegression()
-           mp.plot(Tdiffn,Diffu,'o')
-    		#mp.show()
-           TEST.append(Tdiffn)
-           TEST.append(Diffu)
-    		#mp.show()
-    		#x=Tdiffn[1:]
-    		#y=Diffu[1:]
-    		#print x,y
-    
-    	# Train the model using the training sets
+#           mp.plot(Tdiffn,Diffu,'o')
+           xyz = pd.DataFrame({'x':Tdiffn,'y':Diffu})
+           hji += geom_point(aes(x='x',y='y'), data = xyz, shape ='o', color ='green')
+        		#mp.show()
+
+        		#x=Tdiffn[1:]
+        		#y=Diffu[1:]
+        		#print x,y
+        
+        	# Train the model using the training sets
            regr.fit(x.reshape(-1,1),y.ravel())#y.reshape(-1,1))
-    		#print len(x),len(y)
-    		#f = interpolate.interp1d(x, y,fill_value = "extrapolate")
+        		#print len(x),len(y)
+        		#f = interpolate.interp1d(x, y,fill_value = "extrapolate")
            xnew=np.asarray(Tdiffn[0:])
-    		#ynew=regr(xnew)
+        		#ynew=regr(xnew)
            y_pred=regr.predict(xnew.reshape(-1,1))
            y_pred=y_pred.ravel()
            D_new.append(y_pred[0])
-    		#mp.plot(xnew,ynew,'-',x,y,'o')
-    		#mp.scatter(x, y)#  color='black')
-           mp.plot(xnew, y_pred,'--')#, color='blue', linewidth=3)
-           TEST2.append(xnew)
-           TEST3.append(y_pred)
-
-#    		np.savetxt('REGR.txt',np.asarray(TEST))
-#    		np.savetxt('REGR1.txt',np.asarray(TEST2))
-       mp.show()
-       
-       xynp = pd.DataFrame({'x':np.array(TEST2)[0,:],'y':np.array(TEST3)[0,:],'Tdiff':np.array(TEST2)[0,:]})#'Diffu':np.array(TEST5)[0,:]})
-       tes9 = ggplot(aes(x='x',y='y'), data = xynp) + geom_point()
-       print(tes9)
+        		#mp.plot(xnew,ynew,'-',x,y,'o')
+        		#mp.scatter(x, y)#  color='black')
+#           mp.plot(xnew, y_pred,'--')#, color='blue', linewidth=3)
+            
+           jkl = pd.DataFrame({'x':xnew,'y':y_pred})
+           hji += geom_point(aes(x='x',y='y'), data = jkl,shape = '+', color='red')
+            
+        #    		np.savetxt('REGR.txt',np.asarray(TEST))
+        #    		np.savetxt('REGR1.txt',np.asarray(TEST2))
+#       mp.show()
+        
+       print(hji+xlim(low = 0)+ylim(low = 0))
        
        return (Datax[0],D_new)
 
@@ -283,7 +291,7 @@ class KM_Class:
 
 #The GGPlot version of X_spa and Diffusion
         XsD = pd.DataFrame({'X_Spa':np.array(X_spa)[0,:],'Diffusion':np.array(Diffusion)[0,:]})
-        tes7 = ggplot(aes(x='X_Spa',y='Diffusion'), data=XsD) + geom_point()
+        tes7 = ggplot(aes(x='X_Spa',y='Diffusion'), data=XsD) + geom_point() +xlim(low=0)+ylim(low=0)
         print(tes7)
         #Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
         #df=pd.DataFrame(Diffusion)

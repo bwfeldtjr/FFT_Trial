@@ -80,10 +80,10 @@ class PSD_Class:
 #    	 mp.legend(loc='best')
     	 mp.xlabel('Lag')
     	 mp.ylabel('Autocorrelation')
-    	 mp.savefig('Autocorr.png',dpi=300,format='png')
+#    	 mp.savefig('Autocorr.png',dpi=300,format='png')
     	 mp.show()
-    	 CoorUV = pd.DataFrame({'len':np.arange(0,len(CorrU)),'C':CorrU,'D':CorrV})        
-    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='len', y='D'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'len',y='C'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
+    	 CoorUV = pd.DataFrame({'Lag':np.arange(0,len(CorrU)),'C':CorrU,'D':CorrV})        
+    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='Lag', y='D'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'Lag',y='C'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
     	 print(tes2)
     	 print("Computing energy spectrum...")
     	 yf = np.fft.fft(CorrU)#+np.fft.fft(CorrV)+np.fft.fft(CorrZ)
@@ -93,7 +93,7 @@ class PSD_Class:
     	 xf = np.linspace(0.0, 1.0/(2.0*dt), N/2)
     	 yf=0.5*yf
     	 yf1=0.5*yf1
-    	 fig, ax = mp.subplots()
+#    	 fig, ax = mp.subplots()
     	 y=2.0/N * np.abs(yf[:N//2])
     	 y1=2.0/N*np.abs(yf1[:N//2])
     	 #y1=signal.savgol_filter(y1,25,2)
@@ -116,13 +116,13 @@ class PSD_Class:
     	 FF=2.0/N*FF[:N//2]#np.abs(FF[:N/2])
     	 #print FF
     	 #FF=signal.savgol_filter(FF,139,8)
-    	 mp.loglog(xf,FF,label='Velocity')
-    	 mp.loglog(xf,FF1,label='Temperature')
-    	 C_k=FF[np.size(FF)//2]/(xf[np.size(FF)//2].astype(float))**(-5.0/3.0)
-    	 C_k=C_k*0.2
-    	 mp.loglog(xf[20:len(xf)-20],C_k*(xf[20:len(xf)-20])**(-5.0/3.0),'--',linewidth=4,color='black')
-    	 mp.ylim([10**-8,10**1])
-    	 mp.legend(loc='best')
+#    	 mp.loglog(xf,FF,label='Velocity')
+#    	 mp.loglog(xf,FF1,label='Temperature')
+#    	 C_k=FF[np.size(FF)//2]/(xf[np.size(FF)//2].astype(float))**(-5.0/3.0)
+#    	 C_k=C_k*0.2
+#    	 mp.loglog(xf[20:len(xf)-20],C_k*(xf[20:len(xf)-20])**(-5.0/3.0),'--',linewidth=4,color='black')
+#    	 mp.ylim([10**-8,10**1])
+#    	 mp.legend(loc='best')
 #    	 mp.savefig('DNS_LES_2.png',dpi=300,format='png')
         
     	 mp.show()
@@ -133,15 +133,15 @@ class PSD_Class:
     
     
     def Taylor(self, dt, file):
-        mp.rcParams['axes.linewidth'] = 2
-        #mp.rcParams['text.usetex'] = True
-        mp.rcParams['text.latex.unicode'] = True
-        mp.rcParams['font.family'] = 'serif'
-        mp.rcParams['axes.linewidth'] = 4
-        mp.rcParams['text.latex.preamble'] = [r'\usepackage{sfmath} \boldmath']
-        mp.rcParams.update({'legend.fontsize': 15,
-                  'legend.handlelength': 2})
-        mp.tick_params(axis='both', which='major', labelsize=12)
+#        mp.rcParams['axes.linewidth'] = 2
+#        #mp.rcParams['text.usetex'] = True
+#        mp.rcParams['text.latex.unicode'] = True
+#        mp.rcParams['font.family'] = 'serif'
+#        mp.rcParams['axes.linewidth'] = 4
+#        mp.rcParams['text.latex.preamble'] = [r'\usepackage{sfmath} \boldmath']
+#        mp.rcParams.update({'legend.fontsize': 15,
+#                  'legend.handlelength': 2})
+#        mp.tick_params(axis='both', which='major', labelsize=12)
         df=pd.read_csv(str(file))
         P=df.values
         
@@ -154,7 +154,7 @@ class PSD_Class:
         mp.show()
         
         A = pd.DataFrame({'Trajectory':A,'Time':np.arange(0,len(A),1)})
-        tes = ggplot(aes(x = 'Time', y = 'Trajectory'),data=A) + geom_point() + geom_line()
+        tes = ggplot(aes(x = 'Time', y = 'Trajectory'),data=A) + geom_point() + geom_line() + xlim(low = 0)
         print(tes)
 
         A2=P[:,np.random.randint(0,len(df.columns))]
@@ -169,11 +169,11 @@ class PSD_Class:
         ACF=acf(A['Trajectory'],nlags=99)
         ACF=np.array(ACF)
         tau=np.arange(0,100)*dt
-        mp.plot(tau,ACF)
-        mp.show()
+#        mp.plot(tau,ACF)
+#        mp.show()
         tauACF = pd.DataFrame({'a':ACF,'b':tau})
 
-        tes1 = ggplot(aes(x='b',y='a'), data = tauACF) + geom_point() + geom_line() + labs(x='tau',y='ACF',title = 'Autocorrelation Function')
+        tes1 = ggplot(aes(x='b',y='a'), data = tauACF) + geom_point()+geom_line() + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-1, high=np.max(tau)+1)
         print(tes1)
         print(ACF[10])
         osculating = lambda lamb: (ACF[1]-(1-tau[1]**2/lamb))**2
@@ -181,24 +181,25 @@ class PSD_Class:
         initial=0.1
         lamb = scipy.optimize.fmin(osculating, initial)
         print ("This is the value ",lamb)
-        
-        mp.plot(tau,ACF[0:len(tau)],color='red',linewidth=4)
-        mp.plot(tau,1-tau**2/lamb,'--',color='green',linewidth=4)
-        mp.xlabel(r'$\tau$(sec)',fontsize=20)
-        mp.ylabel(r'Autocorrelation',fontsize=20)
-        mp.axvline(x=lamb**0.5,color='black',linestyle='--',linewidth=4)
-        mp.axhline(y=0,color='black')
-        mp.xlim(0,4)
-        mp.annotate(r'Osculating-parabola',fontsize=20, xy=(lamb**0.5, 0),xytext=(1, 0.5),arrowprops=dict(facecolor='black', shrink=0.05))
-        mp.annotate('', xy=(0, 0), xycoords='data',
-                     xytext=(lamb**0.5, 0), textcoords='data',
-                     arrowprops=dict(facecolor='red',lw=4,arrowstyle="<->"))
-        mp.annotate(r'{$\lambda_{\tau}$}', xy=(0.02, 0.05), xycoords='data',
-                     fontsize=15.0,textcoords='data',ha='center')
-        mp.ylim(-0.4,1.1)
-        mp.tight_layout()
-        #mp.savefig('Taylor.png',dpi=300,format='png')
-        mp.show()
+       
+#   WORK ON THIS
+#        mp.plot(tau,ACF[0:len(tau)],color='red',linewidth=4)
+#        mp.plot(tau,1-tau**2/lamb,'--',color='green',linewidth=4)
+#        mp.xlabel(r'$\tau$(sec)',fontsize=20)
+#        mp.ylabel(r'Autocorrelation',fontsize=20)
+#        mp.axvline(x=lamb**0.5,color='black',linestyle='--',linewidth=4)
+#        mp.axhline(y=0,color='black')
+#        mp.xlim(0,4)
+#        mp.annotate(r'Osculating-parabola',fontsize=20, xy=(lamb**0.5, 0),xytext=(1, 0.5),arrowprops=dict(facecolor='black', shrink=0.05))
+#        mp.annotate('', xy=(0, 0), xycoords='data',
+#                     xytext=(lamb**0.5, 0), textcoords='data',
+#                     arrowprops=dict(facecolor='red',lw=4,arrowstyle="<->"))
+#        mp.annotate(r'{$\lambda_{\tau}$}', xy=(0.02, 0.05), xycoords='data',
+#                     fontsize=15.0,textcoords='data',ha='center')
+#        mp.ylim(-0.4,1.1)
+#        mp.tight_layout()
+#        #mp.savefig('Taylor.png',dpi=300,format='png')
+#        mp.show()
 
 
 

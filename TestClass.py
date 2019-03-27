@@ -17,20 +17,8 @@ filename = 'PSI_TSERIES.csv' #input("Input file (include extension but not apost
 dt = 0.1 #input("dt for Taylor Function = ")
 
 
-
-
-
-
 y = PSD.PSD_Class()
 y.Taylor(dt,filename)
 
-#x = KM.KM_Class()
-#x.Everything_else(filename,dt)
-
-#ax = mp.axes(projection = '3d')
-#
-#x = np.random.normal(0,1,1000)
-#y = np.random.normal(0,1,1000)
-#z = np.random.normal(0,1,1000)
-#
-#ax.scatter3D(x,y,z)
+x = KM.KM_Class()
+x.Everything_else(filename,dt)
