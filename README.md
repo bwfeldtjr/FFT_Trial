@@ -1,4 +1,6 @@
 # FFT_Trial
+3-26-19: Got the one plot in KM_Class to work. I started working on plotting that density plot you showed me but it is proving to be much more difficult than plotting lines. I also found some more lines within loops that didn't need to be there, so on my computer it can now run both PSD_Class and KM_Class in under 10 seconds, which is a vast improvement.
+
 3-25-19: KM Class now has all but one plot using ggplot (the linear regression one is giving me a hard time). I've also just removed or improved some redundancies or unecessary lines throughout the KM Class and PSD Class
 
 3-22-19: All of the plots on the PSD Class plot on ggplot and pyplot just so we can see both. I still need to add legends (surprisingly difficult). I'm going to keep working on it after the K-State game is over to try to get the KM Class to be all on ggplot by the end of today.
