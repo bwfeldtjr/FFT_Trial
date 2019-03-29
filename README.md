@@ -1,4 +1,6 @@
 # FFT_Trial
+3-28-19: All the plots are working, though I still haven't been able to get the fills in the density plot like with pyplot. I've been working on setting up a plotting function to save space (thanks for the idea). I also have some lines set up to accept user input in terms of what function(s) they want to run but those are currently not used and TestClass still just runs everything.
+
 3-26-19: Got the one plot in KM_Class to work. I started working on plotting that density plot you showed me but it is proving to be much more difficult than plotting lines. I also found some more lines within loops that didn't need to be there, so on my computer it can now run both PSD_Class and KM_Class in under 10 seconds, which is a vast improvement.
 
 3-25-19: KM Class now has all but one plot using ggplot (the linear regression one is giving me a hard time). I've also just removed or improved some redundancies or unecessary lines throughout the KM Class and PSD Class
