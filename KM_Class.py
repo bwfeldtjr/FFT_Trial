@@ -94,7 +94,7 @@ class KM_Class:
 #    	if delta==1:
 ##    	    ax1=mp.subplots()
 ##    	    ax1.set_ylim(-3,3)
-#    	    mp.tight_layout()
+##    	    mp.tight_layout()
 #    	    g = sns.jointplot(Itemx/std1, Itemy/std1, kind='kde',data=None,xlim=(-2,2),ylim=(-2,2),n_levels=10)#.plot_joint(sns.kdeplot, zorder=20, n_levels=10)#sns.jointplot(Itemx, Itemy, kind="kde",n_levels=400)
 ##    	    g.set_axis_ylim(-3,3)
 #    	    g.plot_joint(mp.scatter,color='red', s=200, linewidth=0.01, marker='+')
@@ -102,6 +102,9 @@ class KM_Class:
 #    	    mp.tight_layout()
 #    	    #mp.savefig('Joint1.png',dpi=300,format='png',transparent=True)
 #    	    mp.show()
+#    	    dens = pd.DataFrame({'x':Itemx/std1,'y':Itemy/std1})
+#    	    tes10 = ggplot(aes(x='x',y='y'),data = dens) + geom_point(size = 200, shape = '+')
+#    	    print(tes10)
     	K=[]
     	K1=[]
     	K2=[]
@@ -179,13 +182,13 @@ class KM_Class:
 #           mp.plot(xnew, y_pred,'--')#, color='blue', linewidth=3)
             
            jkl = pd.DataFrame({'x':xnew,'y':y_pred})
-           hji += geom_point(aes(x='x',y='y'), data = jkl,shape = '+', color='red')
+           hji += geom_line(aes(x='x',y='y'), data = jkl, linetype='dashed',color='red')
             
         #    		np.savetxt('REGR.txt',np.asarray(TEST))
         #    		np.savetxt('REGR1.txt',np.asarray(TEST2))
 #       mp.show()
         
-       print(hji+xlim(low = 0)+ylim(low = 0))
+       print(hji+xlim(low = -.1)+ylim(low = -.01))
        
        return (Datax[0],D_new)
 
@@ -291,7 +294,7 @@ class KM_Class:
 
 #The GGPlot version of X_spa and Diffusion
         XsD = pd.DataFrame({'X_Spa':np.array(X_spa)[0,:],'Diffusion':np.array(Diffusion)[0,:]})
-        tes7 = ggplot(aes(x='X_Spa',y='Diffusion'), data=XsD) + geom_point() +xlim(low=0)+ylim(low=0)
+        tes7 = ggplot(aes(x='X_Spa',y='Diffusion'), data=XsD) + geom_point() +xlim(low=np.min(X_spa)-.01)+ylim(low=0)
         print(tes7)
         #Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
         #df=pd.DataFrame(Diffusion)

@@ -37,12 +37,11 @@ class PSD_Class:
     	return np.asarray(Corr)
     
     def PSD(self,U1,V1,Time1):##V1,Z1,Time1):
-    	 U=U1
-    	 U=U#-np.mean(U)
-    	 V=V1
-    	 V=V#-np.mean(V)
-    	 print ("This is the shape", np.shape(V))
-    	 V_uni=V
+#    	 U=U1
+#    	 U=U#-np.mean(U)
+#    	 V=V1
+#    	 V=V#-np.mean(V)
+    	 print ("This is the shape", np.shape(V1))
     	 #Z=Z1
     	 Time=Time1
     	 minT=np.min(Time)
@@ -64,11 +63,10 @@ class PSD_Class:
     	 Lag=np.arange(0,N)
     	 print ('Computing Autocorrelation...')
     	 #print Lag
-    	 U_uni=U
     
     
-    	 CorrU=self.corr(U_uni)
-    	 CorrV=self.corr(V_uni)
+    	 CorrU=self.corr(U1)
+    	 CorrV=self.corr(V1)
     	 #CorrZ=corr(Lag,Z_uni)
     	 CorrU=CorrU/np.max(CorrU)
     	 CorrV=CorrV/np.max(CorrV)
@@ -82,8 +80,8 @@ class PSD_Class:
     	 mp.ylabel('Autocorrelation')
 #    	 mp.savefig('Autocorr.png',dpi=300,format='png')
     	 mp.show()
-    	 CoorUV = pd.DataFrame({'Lag':np.arange(0,len(CorrU)),'C':CorrU,'D':CorrV})        
-    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='Lag', y='D'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'Lag',y='C'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
+    	 CoorUV = pd.DataFrame({'Lag':np.arange(0,len(CorrU)),'LES':CorrU,'DNS':CorrV})        
+    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='Lag', y='LES'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'Lag',y='DNS'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
     	 print(tes2)
     	 print("Computing energy spectrum...")
     	 yf = np.fft.fft(CorrU)#+np.fft.fft(CorrV)+np.fft.fft(CorrZ)
@@ -103,10 +101,10 @@ class PSD_Class:
     	 #mp.show()
     	 #FFT and convolution integral
     	 print ("Plotting spectrum via multiplication in fourier domain...")
-    	 FF=(np.fft.fft(U))#+(np.fft.fft(V-np.mean(V)))+(np.fft.fft(Z-np.mean(Z)))
+    	 FF=(np.fft.fft(U1))#+(np.fft.fft(V-np.mean(V)))+(np.fft.fft(Z-np.mean(Z)))
     	 FF=np.abs(FF)
      	
-    	 FF1=(np.fft.fft(V))
+    	 FF1=(np.fft.fft(V1))
     	 FF1=np.abs(FF1)
     	 FF1=FF1*FF1*0.5
     	
@@ -150,11 +148,11 @@ class PSD_Class:
         A=A.diff(periods=4)
         A=A.dropna()
         A=A.values
-        mp.plot(A)
-        mp.show()
+#        mp.plot(A)
+#        mp.show()
         
-        A = pd.DataFrame({'Trajectory':A,'Time':np.arange(0,len(A),1)})
-        tes = ggplot(aes(x = 'Time', y = 'Trajectory'),data=A) + geom_point() + geom_line() + xlim(low = 0)
+        A = pd.DataFrame({'Velocity':A,'Time':np.arange(0,len(A),1)})
+        tes = ggplot(aes(x = 'Time', y = 'Velocity'),data=A) + geom_line() + xlim(low = 0, high = len(A)+1) +labs(title = 'Tseries')
         print(tes)
 
         A2=P[:,np.random.randint(0,len(df.columns))]
@@ -163,10 +161,10 @@ class PSD_Class:
         A2=A2.dropna()
         A2=A2.values
 
-        self.PSD(A['Trajectory'],A2,np.arange(0,len(A),1))
+        self.PSD(A['Velocity'],A2,np.arange(0,len(A),1))
         
         dt=float(dt)
-        ACF=acf(A['Trajectory'],nlags=99)
+        ACF=acf(A['Velocity'],nlags=99)
         ACF=np.array(ACF)
         tau=np.arange(0,100)*dt
 #        mp.plot(tau,ACF)

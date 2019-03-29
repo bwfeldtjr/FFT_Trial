@@ -20,5 +20,5 @@ dt = 0.1 #input("dt for Taylor Function = ")
 y = PSD.PSD_Class()
 y.Taylor(dt,filename)
 
-x = KM.KM_Class()
-x.Everything_else(filename,dt)
+#x = KM.KM_Class()
+#x.Everything_else(filename,dt)
