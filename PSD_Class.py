@@ -15,6 +15,8 @@ import math as ma
 import os as OS
 from statsmodels.tsa.stattools import acf
 import scipy.optimize
+import ggplotter as ggp
+
 
 filename = 'PSI_TSERIES.csv' #input("Input file (include extension but not apostraphes) = ")
 #mp.style.use('ggplot')
@@ -71,18 +73,24 @@ class PSD_Class:
     	 CorrU=CorrU/np.max(CorrU)
     	 CorrV=CorrV/np.max(CorrV)
     	 #CorrZ=CorrZ#/np.max(CorrZ)
-    	 mp.plot(CorrV[0:1150],label='DNS')
-    	 mp.plot(CorrU[0:1150],label='LES')
-    	 mp.legend(loc='best')
-    	 #mp.plot(CorrZ,label='CorrZ')
+#    	 mp.plot(CorrV[0:1150],label='DNS')
+#    	 mp.plot(CorrU[0:1150],label='LES')
 #    	 mp.legend(loc='best')
-    	 mp.xlabel('Lag')
-    	 mp.ylabel('Autocorrelation')
-#    	 mp.savefig('Autocorr.png',dpi=300,format='png')
-    	 mp.show()
-    	 CoorUV = pd.DataFrame({'Lag':np.arange(0,len(CorrU)),'LES':CorrU,'DNS':CorrV})        
-    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='Lag', y='LES'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'Lag',y='DNS'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
-    	 print(tes2)
+#    	 #mp.plot(CorrZ,label='CorrZ')
+##    	 mp.legend(loc='best')
+#    	 mp.xlabel('Lag')
+#    	 mp.ylabel('Autocorrelation')
+##    	 mp.savefig('Autocorr.png',dpi=300,format='png')
+#    	 mp.show()
+#    	 CoorUV = pd.DataFrame({'Lag':np.arange(0,len(CorrU)),'LES':CorrU,'DNS':CorrV})        
+#    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='Lag', y='LES'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'Lag',y='DNS'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
+#    	 print(tes2)
+
+#    	 tes2 = ggp.plotter(Lag,CorrU,CorrV, ln='Yes')
+#    	 print(tes2)
+
+    	 print(ggp.plotter(Lag,CorrU,CorrV, ln='Yes'))
+
     	 print("Computing energy spectrum...")
     	 yf = np.fft.fft(CorrU)#+np.fft.fft(CorrV)+np.fft.fft(CorrZ)
     	 yf1= np.fft.fft(CorrV)
@@ -123,10 +131,15 @@ class PSD_Class:
 #    	 mp.legend(loc='best')
 #    	 mp.savefig('DNS_LES_2.png',dpi=300,format='png')
         
-    	 mp.show()
-    	 xfFF = pd.DataFrame({'x':xf,'y':FF,'z':FF1})
-    	 tes4 = ggplot(aes(),data=xfFF)+ geom_line(aes(x='x',y='y'),data = xfFF, color='blue') + geom_line(aes(x='x',y='z'),data = xfFF, color='green') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1)
-    	 print(tes4)
+#    	 mp.show()
+#    	 xfFF = pd.DataFrame({'x':xf,'y':FF,'z':FF1})
+#    	 tes4 = ggplot(aes(),data=xfFF)+ geom_line(aes(x='x',y='y'),data = xfFF, color='blue') + geom_line(aes(x='x',y='z'),data = xfFF, color='green') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1)
+#    	 print(tes4)
+    
+    	 print(ggp.plotter(xf,FF,y2=FF1,ln='Yes') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1))
+
+#    	 tes4 = ggp.plotter(xf,FF,y2=FF1,ln='Yes') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1)
+#    	 print(tes4)
     #    OS.remove('PSD.pyc')
     
     
@@ -151,28 +164,38 @@ class PSD_Class:
 #        mp.plot(A)
 #        mp.show()
         
-        A = pd.DataFrame({'Velocity':A,'Time':np.arange(0,len(A),1)})
-        tes = ggplot(aes(x = 'Time', y = 'Velocity'),data=A) + geom_line() + xlim(low = 0, high = len(A)+1) +labs(title = 'Tseries')
-        print(tes)
-
+#        AB = pd.DataFrame({'Velocity':A,'Time':np.arange(0,len(A),1)})
+#        tes = ggplot(aes(x = 'Time', y = 'Velocity'),data=AB) + geom_line() + xlim(low = 0, high = len(A)+1) +labs(title = 'Tseries')
+#        print(tes)
+        
+#        tes = ggp.plotter(np.arange(0,len(A),1),A,ln='Yes')
+#        print(tes)
+        
+        print(ggp.plotter(np.arange(0,len(A),1),A,ln='Yes')+ xlim(low = 0, high = len(A)+1) +labs(x='Time',y='Velocity',title = 'Tseries'))
+        
+        
         A2=P[:,np.random.randint(0,len(df.columns))]
         A2=pd.Series(A2)
         A2=A2.diff(periods=4)
         A2=A2.dropna()
         A2=A2.values
 
-        self.PSD(A['Velocity'],A2,np.arange(0,len(A),1))
+        self.PSD(A,A2,np.arange(0,len(A),1))
         
         dt=float(dt)
-        ACF=acf(A['Velocity'],nlags=99)
+        ACF=acf(A,nlags=99)
         ACF=np.array(ACF)
         tau=np.arange(0,100)*dt
 #        mp.plot(tau,ACF)
 #        mp.show()
-        tauACF = pd.DataFrame({'a':ACF,'b':tau})
+#        tauACF = pd.DataFrame({'a':ACF,'b':tau})
 
-        tes1 = ggplot(aes(x='b',y='a'), data = tauACF) + geom_point()+geom_line() + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-1, high=np.max(tau)+1)
-        print(tes1)
+#        tes1 = ggplot(aes(x='b',y='a'), data = tauACF) + geom_point()+geom_line() + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-1, high=np.max(tau)+1)
+#        print(tes1)
+        
+        print(ggp.plotter(tau,ACF,pt='Yes',ln='Yes') + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-1, high=np.max(tau)+1) )
+        
+        
         print(ACF[10])
         osculating = lambda lamb: (ACF[1]-(1-tau[1]**2/lamb))**2
         

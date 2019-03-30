@@ -27,6 +27,7 @@ from sklearn.linear_model import LinearRegression
 from matplotlib import rc
 from scipy.stats import norm, gaussian_kde
 from statsmodels.distributions.empirical_distribution import ECDF
+import ggplotter as ggp
 #sns.set(rc={'figure.figsize':(20,10)})
 #mp.style.use('ggplot')
 #mp.rcParams['axes.linewidth'] = 20
@@ -232,9 +233,11 @@ class KM_Class:
 #        #print (np.shape(Tseries))
 
 #The GGPlot version of the autocorrelation        
-        RAWT = pd.DataFrame({'Lag':np.arange(0,31,1),'Tseries':acf(Tseries,nlags=30),'RAW':acf(RAW,nlags=30)})
-        tes5 = ggplot(aes(),data=RAWT) + geom_line(aes(x='Lag',y='Tseries'),data=RAWT,color = 'blue') + geom_line(aes(x='Lag',y='RAW'), data=RAWT, color = 'red') + labs(x='Lag',y=' ',title='Auto-correlation') #+ theme(legend.position = 'right')
-        print(tes5)
+#        RAWT = pd.DataFrame({'Lag':np.arange(0,31,1),'Tseries':acf(Tseries,nlags=30),'RAW':acf(RAW,nlags=30)})
+#        tes5 = ggplot(aes(),data=RAWT) + geom_line(aes(x='Lag',y='Tseries'),data=RAWT,color = 'blue') + geom_line(aes(x='Lag',y='RAW'), data=RAWT, color = 'red') + labs(x='Lag',y=' ',title='Auto-correlation') #+ theme(legend.position = 'right')
+#        print(tes5)
+        
+        print(ggp.plotter(np.arange(0,31,1),acf(Tseries,nlags = 30),acf(RAW,nlags=30),ln='Yes')+labs(x='Lag',y=' ',title='Auto-correlation'))
 
 #The Pyplot version of Tseries
 #        mp.figure(figsize=(20,5))
@@ -247,9 +250,11 @@ class KM_Class:
 #        mp.show()
 
 #The GGPlot version of Tseries
-        TTS = pd.DataFrame({'Time':np.arange(0,len(Tseries)),'Tseries':Tseries})
-        tes8 = ggplot(aes(x='Time',y='Tseries'), data = TTS) + geom_line() + labs(y = 'Velocity',title = 'T Series')
-        print(tes8)
+#        TTS = pd.DataFrame({'Time':np.arange(0,len(Tseries)),'Tseries':Tseries})
+#        tes8 = ggplot(aes(x='Time',y='Tseries'), data = TTS) + geom_line() + labs(y = 'Velocity',title = 'T Series')
+#        print(tes8)
+        
+        print(ggp.plotter(np.arange(0,len(Tseries)),Tseries,ln='Yes')+labs(x='Time',y='Velocity',title = 'Tseries'))
         
         #print (np.shape(Tseries))
         Diff=0.01
@@ -293,9 +298,11 @@ class KM_Class:
         
 
 #The GGPlot version of X_spa and Diffusion
-        XsD = pd.DataFrame({'X_Spa':np.array(X_spa)[0,:],'Diffusion':np.array(Diffusion)[0,:]})
-        tes7 = ggplot(aes(x='X_Spa',y='Diffusion'), data=XsD) + geom_point() +xlim(low=np.min(X_spa)-.01)+ylim(low=0)
-        print(tes7)
+#        XsD = pd.DataFrame({'X_Spa':np.array(X_spa)[0,:],'Diffusion':np.array(Diffusion)[0,:]})
+#        tes7 = ggplot(aes(x='X_Spa',y='Diffusion'), data=XsD) + geom_point() +xlim(low=np.min(X_spa)-.01)+ylim(low=0)
+#        print(tes7)
+        
+        print(ggp.plotter(np.array(X_spa)[0,:],np.array(Diffusion)[0,:],pt='Yes')+xlim(low=np.min(X_spa)-.01)+ylim(low=0)+labs(x='X_Spa',y='Diffusion'))
         #Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
         #df=pd.DataFrame(Diffusion)
         
