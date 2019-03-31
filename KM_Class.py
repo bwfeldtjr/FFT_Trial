@@ -77,7 +77,6 @@ class KM_Class:
     		Itemx1=np.array(Itemx1)
     		Itemy1=np.array(Itemy1)
     
-    
     		hist, bin_edges= np.histogram(Itemy1,bins=len(Itemy1),density=True)
     		#mp.plot(bin_edges[:-1],hist,'o')
     		prob.append(hist)
@@ -92,7 +91,7 @@ class KM_Class:
     	Itemx=np.array(Itemx)
     	Itemy=np.array(Itemy)
 
-#    	if delta==1:
+    	if delta==1:
 ##    	    ax1=mp.subplots()
 ##    	    ax1.set_ylim(-3,3)
 ##    	    mp.tight_layout()
@@ -106,6 +105,7 @@ class KM_Class:
 #    	    dens = pd.DataFrame({'x':Itemx/std1,'y':Itemy/std1})
 #    	    tes10 = ggplot(aes(x='x',y='y'),data = dens) + geom_point(size = 200, shape = '+')
 #    	    print(tes10)
+    	    print(ggp.plotter(Itemx/std1,Itemy/std1)+geom_point(size = 200, shape = '+'))
     	K=[]
     	K1=[]
     	K2=[]
