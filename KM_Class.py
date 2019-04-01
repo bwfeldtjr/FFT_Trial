@@ -6,27 +6,27 @@ Created on Wed Feb 27 14:40:01 2019
 """
 from ggplot import *
 import seaborn as sns; #sns.set(color_codes=True)
-from scipy import stats
-from scipy import signal
+#from scipy import stats
+#from scipy import signal
 import numpy as np
 from statsmodels.tsa.stattools import acf
 from scipy.interpolate import Rbf
-from sklearn.svm import SVR
-from scipy import interpolate
+#from sklearn.svm import SVR
+#from scipy import interpolate
 #from scipy.interpolate import lagrange
 import matplotlib.pyplot as mp
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 #mp.style.use('dark_background')
 import pandas as pd
-from sklearn import  linear_model
-from scipy.optimize import curve_fit
-from sklearn.neighbors.kde import KernelDensity
-from sklearn import datasets, linear_model
+#from sklearn import  linear_model
+#from scipy.optimize import curve_fit
+#from sklearn.neighbors.kde import KernelDensity
+#from sklearn import datasets, linear_model
 from sklearn.linear_model import LinearRegression
 from matplotlib import rc
-from scipy.stats import norm, gaussian_kde
-from statsmodels.distributions.empirical_distribution import ECDF
+#from scipy.stats import norm, gaussian_kde
+#from statsmodels.distributions.empirical_distribution import ECDF
 import ggplotter as ggp
 #sns.set(rc={'figure.figsize':(20,10)})
 #mp.style.use('ggplot')
@@ -303,6 +303,7 @@ class KM_Class:
 #        print(tes7)
         
         print(ggp.plotter(np.array(X_spa)[0,:],np.array(Diffusion)[0,:],pt='Yes')+xlim(low=np.min(X_spa)-.01)+ylim(low=0)+labs(x='X_Spa',y='Diffusion'))
+        
         #Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
         #df=pd.DataFrame(Diffusion)
         
