@@ -119,7 +119,7 @@ class PSD_Class:
     	 FF=FF*FF*0.5
     	 FF=2.0/N*FF[:N//2]#np.abs(FF[:N/2])
     	 #print FF
-    	 FF=signal.savgol_filter(FF,139,8)
+#    	 FF=signal.savgol_filter(FF,139,8)
     	 mp.loglog(xf,FF,label='Velocity')
     	 mp.loglog(xf,FF1,label='Temperature')
     	 C_k=FF[np.size(FF)//2]/(xf[np.size(FF)//2].astype(float))**(-5.0/3.0)
