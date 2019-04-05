@@ -4,39 +4,19 @@ Created on Wed Feb 27 14:40:01 2019
 
 @author: Brenden
 """
-from ggplot import *
+#from ggplot import *
 import seaborn as sns; #sns.set(color_codes=True)
-#from scipy import stats
-#from scipy import signal
 import numpy as np
 from statsmodels.tsa.stattools import acf
 from scipy.interpolate import Rbf
-#from sklearn.svm import SVR
-#from scipy import interpolate
-#from scipy.interpolate import lagrange
 import matplotlib.pyplot as mp
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
-#mp.style.use('dark_background')
 import pandas as pd
-#from sklearn import  linear_model
-#from scipy.optimize import curve_fit
-#from sklearn.neighbors.kde import KernelDensity
-#from sklearn import datasets, linear_model
 from sklearn.linear_model import LinearRegression
-from matplotlib import rc
-#from scipy.stats import norm, gaussian_kde
-#from statsmodels.distributions.empirical_distribution import ECDF
-import ggplotter as ggp
+#import ggplotter as ggp
 #sns.set(rc={'figure.figsize':(20,10)})
-#mp.style.use('ggplot')
-#mp.rcParams['axes.linewidth'] = 20
-##mp.rcParams['text.usetex'] = True
-#mp.rcParams['text.latex.unicode'] = True
-#mp.rcParams['font.family'] = 'serif'
-#mp.rcParams['axes.linewidth'] = 8
-#mp.rcParams['text.latex.preamble'] = [r'\usepackage{sfmath} \boldmath']
-#mp.tick_params(axis='both', which='major', labelsize=12)
+
 
 class KM_Class:
     def exponential_fit(self,x, a, b, c):
@@ -144,8 +124,8 @@ class KM_Class:
            
         #       print( np.shape(DataD))
        D_new=[]
-       asdf = pd.DataFrame({'x':np.arange(0,5,1)})
-       hji = ggplot(aes(),data = asdf)
+#       asdf = pd.DataFrame({'x':np.arange(0,5,1)})
+#       hji = ggplot(aes(),data = asdf)
        for j in range(0,len(DataD[0,:])):
            Diffu=DataD[0:37,j]
 #           for i in range(0,37):

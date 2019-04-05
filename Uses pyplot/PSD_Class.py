@@ -4,18 +4,17 @@ Created on Tue Feb 19 14:00:50 2019
 
 @author: Brenden
 """
-from ggplot import *
+#from ggplot import *
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as mp
 import seaborn as sns; sns.set(color_codes=True)
 #from scipy import interpolate
-from scipy import signal
 #import math as ma
 #import os as OS
 from statsmodels.tsa.stattools import acf
 import scipy.optimize
-import ggplotter as ggp
+#import ggplotter as ggp
 
 class PSD_Class:
 #    def __init__(self, func):
