@@ -23,11 +23,11 @@ def plotter(x,y1,y2=None,y3=None,pt=None,ln=None):
         data1 = pd.DataFrame({'x':x,'y1':y1,'y2':y2})
         pltt = ggplot(aes(), data = data1) 
         if pt == 'Yes':
-            pltt += geom_point(aes(x='x',y='y1'), data = data1) 
+            pltt += geom_point(data1,aes(x='x',y='y1'))
             pltt += geom_point(aes(x='x',y='y2'), data = data1)
         if ln == 'Yes':
-            pltt += geom_line(aes(x='x',y='y1'),color="blue", data=data1) 
-            pltt += geom_line(aes(x='x',y='y2'),color="green", data = data1)
+            pltt += geom_line(aes('x','y1'), color='blue', data=data1) 
+            pltt += geom_line(aes('x','y2'), color='green', data=data1)
     else:
         data1 = pd.DataFrame({'x':x,'y1':y1})
         pltt = ggplot(aes(x='x',y='y1'), data = data1) 
