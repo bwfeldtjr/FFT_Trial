@@ -9,10 +9,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as mp
 import seaborn as sns; sns.set(color_codes=True)
-#from scipy import interpolate
-#from scipy import signal
-#import math as ma
-#import os as OS
+from scipy import interpolate
+from scipy import signal
+import math as ma
+import os as OS
 from statsmodels.tsa.stattools import acf
 import scipy.optimize
 import ggplotter as ggp
@@ -78,14 +78,16 @@ class PSD_Class:
 #    	 mp.ylabel('Autocorrelation')
 ##    	 mp.savefig('Autocorr.png',dpi=300,format='png')
 #    	 mp.show()
+         
+#       Older way of using ggplot without the new function
 #    	 CoorUV = pd.DataFrame({'Lag':np.arange(0,len(CorrU)),'LES':CorrU,'DNS':CorrV})        
 #    	 tes2 = ggplot(aes(), data = CoorUV) + geom_line(aes(x='Lag', y='LES'),data=CoorUV, color = 'blue') + geom_line(aes(x = 'Lag',y='DNS'), data = CoorUV, color = 'green') #+ theme(legend.position='right')
 #    	 print(tes2)
 
 #    	 tes2 = ggp.plotter(Lag,CorrU,CorrV, ln='Yes')
 #    	 print(tes2)
-
-    	 print(ggp.plotter(Lag,CorrU,CorrV, ln='Yes'))
+#       New way of using ggplot with new function
+    	 print(ggp.plotter(Lag,CorrU,CorrV, ln='Yes')+labs('Lag','Correlation','Blue is LES, Green is DNS'))
 
     	 print("Computing energy spectrum...")
     	 yf = np.fft.fft(CorrU)#+np.fft.fft(CorrV)+np.fft.fft(CorrZ)
@@ -105,19 +107,19 @@ class PSD_Class:
     	 #mp.show()
     	 #FFT and convolution integral
     	 print ("Plotting spectrum via multiplication in fourier domain...")
-    	 FF=(np.fft.fft(U1))#+(np.fft.fft(V-np.mean(V)))+(np.fft.fft(Z-np.mean(Z)))
-    	 FF=np.abs(FF)
+
      	
     	 FF1=(np.fft.fft(V1))
     	 FF1=np.abs(FF1)
-    	 FF1=FF1*FF1*0.5
-    	
+    	 FF1=FF1*FF1*0.5    	
     	 FF1=2.0/N*FF1[:N//2]
-    	
+
+    	 FF=(np.fft.fft(U1))#+(np.fft.fft(V-np.mean(V)))+(np.fft.fft(Z-np.mean(Z)))
+    	 FF=np.abs(FF)    	
     	 FF=FF*FF*0.5
     	 FF=2.0/N*FF[:N//2]#np.abs(FF[:N/2])
     	 #print FF
-    	 #FF=signal.savgol_filter(FF,139,8)
+#    	 FF=signal.savgol_filter(FF,139,8)
 #    	 mp.loglog(xf,FF,label='Velocity')
 #    	 mp.loglog(xf,FF1,label='Temperature')
 #    	 C_k=FF[np.size(FF)//2]/(xf[np.size(FF)//2].astype(float))**(-5.0/3.0)
@@ -125,14 +127,14 @@ class PSD_Class:
 #    	 mp.loglog(xf[20:len(xf)-20],C_k*(xf[20:len(xf)-20])**(-5.0/3.0),'--',linewidth=4,color='black')
 #    	 mp.ylim([10**-8,10**1])
 #    	 mp.legend(loc='best')
-#    	 mp.savefig('DNS_LES_2.png',dpi=300,format='png')
-        
+##    	 mp.savefig('DNS_LES_2.png',dpi=300,format='png')
+#        
 #    	 mp.show()
 #    	 xfFF = pd.DataFrame({'x':xf,'y':FF,'z':FF1})
 #    	 tes4 = ggplot(aes(),data=xfFF)+ geom_line(aes(x='x',y='y'),data = xfFF, color='blue') + geom_line(aes(x='x',y='z'),data = xfFF, color='green') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1)
 #    	 print(tes4)
     
-    	 print(ggp.plotter(xf,FF,y2=FF1,ln='Yes') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1))
+    	 print(ggp.plotter(xf,FF,y2=FF1,ln='Yes') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1) + labs('log(Time)','FFT','Blue is FFT of U1, Green is FFT of V1'))
 
 #    	 tes4 = ggp.plotter(xf,FF,y2=FF1,ln='Yes') + scale_x_log() + scale_y_log() + xlim(low = 0.001, high = 1)+ ylim(low=0.00000001, high=1)
 #    	 print(tes4)
@@ -189,16 +191,17 @@ class PSD_Class:
 #        tes1 = ggplot(aes(x='b',y='a'), data = tauACF) + geom_point()+geom_line() + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-1, high=np.max(tau)+1)
 #        print(tes1)
         
-        print(ggp.plotter(tau,ACF,pt='Yes',ln='Yes') + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-1, high=np.max(tau)+1) )
+        print(ggp.plotter(tau,ACF,pt='Yes',ln='Yes') + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-0.1, high=np.max(tau)+1) )
         
         
-        print(ACF[10])
-        osculating = lambda lamb: (ACF[1]-(1-tau[1]**2/lamb))**2
-        
-        initial=0.1
-        lamb = scipy.optimize.fmin(osculating, initial)
-        print ("This is the value ",lamb)
+#        print(ACF[10])
+#        osculating = lambda lamb: (ACF[1]-(1-tau[1]**2/lamb))**2
+#        
+#        initial=0.1
+#        lamb = scipy.optimize.fmin(osculating, initial)
+#        print ("This is the value ",lamb)
        
+        
 #   WORK ON THIS
 #        mp.plot(tau,ACF[0:len(tau)],color='red',linewidth=4)
 #        mp.plot(tau,1-tau**2/lamb,'--',color='green',linewidth=4)
@@ -217,26 +220,3 @@ class PSD_Class:
 #        mp.tight_layout()
 #        #mp.savefig('Taylor.png',dpi=300,format='png')
 #        mp.show()
-
-
-
-#df=pd.read_csv(str(filename))
-#P=df.values
-#A=P[:,np.random.randint(0,len(df.columns))]
-#A=pd.Series(A)
-#A=A.diff(periods=4)
-#A=A.dropna()
-#A=A.values
-#
-#A2=P[:,np.random.randint(0,len(df.columns))]
-#A2=pd.Series(A2)
-#A2=A2.diff(periods=4)
-#A2=A2.dropna()
-#A2=A2.values
-#
-#
-#dt = 0.1 #input("dt for Taylor Function = ")
-#y = PSD_Class(A)
-#y.PSD(A,A2,np.arange(0,len(A),1))
-#mp.plot(y.corr(A))
-#y.Taylor(dt,filename)
