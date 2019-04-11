@@ -19,7 +19,7 @@ regrnum = 3 #input("regrnum for KM_Class")
 list2 = np.arange(0,100)
 
 
-dec1 = 'y' #input("Run PSD_Class (y/n) ")
+dec1 = 'n' #input("Run PSD_Class (y/n) ")
 dec2 = 'y' #input("Run KM_Class (y/n) ")
 
 x = KM.KM_Class()
@@ -30,3 +30,5 @@ if dec1 == 'y':
 
 if dec2 == 'y':
     x.Everything_else(filename,float(dt),int(regrnum), list2)
+    x.Reg()
+    x.Lange()

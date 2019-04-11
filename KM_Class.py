@@ -247,7 +247,10 @@ class KM_Class:
 #        mp.legend(loc='best')
 #        #mp.savefig('Diffusion.png',dpi=300,format='png')
 #        mp.show()
-        
+
+        Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
+        df=pd.DataFrame(Diffusion)
+        df.to_csv('Diffusion_Raw.csv',index=False, header=False)
 
 #The GGPlot version of X_spa and Diffusion
 #        
@@ -294,7 +297,7 @@ class KM_Class:
         mp.ylabel(r'\textbf{Drift-coefficient}',fontsize=20)
         mp.tight_layout()
         mp.legend(loc='best')
-        mp.savefig('Drift.png',dpi=300,format='png')
+#        mp.savefig('Drift.png',dpi=300,format='png')
         mp.show()
         
         print( np.shape(A))
