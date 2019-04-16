@@ -112,6 +112,7 @@ class KM_Class:
     def Call(self,C,dt, regrnum=None, list2= None):
        Datax=[]
        DataD=[]
+       DataD1 = []
        Tdiff=dt*np.arange(0,37)
        #       print (Tdiff)
        for i in range(1,42):
@@ -120,6 +121,7 @@ class KM_Class:
            X,D,D1,D4= self.KM(C,delta,dt, list2)
            Datax.append(X)
            DataD.append(D)
+           DataD1.append(D1)
        DataD=np.asarray(DataD)
        Datax=np.asarray(Datax)
            
@@ -182,7 +184,7 @@ class KM_Class:
         
        print(hji+xlim(low = -.01)+ylim(low = -.001))
        
-       return (Datax[0],D_new)
+       return (Datax[0],D_new,DataD1)
 
     def Everything_else(self,filename,dt,regrnum=3,list2=None):
         Tseries=pd.read_csv(str(filename))#pd.read_csv('Data1.csv')
@@ -233,9 +235,10 @@ class KM_Class:
 #        sample=int(T/dt)
         Diffusion=[]
         X_spa=[]
+        D1 = []
         C=Tseries#[:,128]#-np.mean(Tseries[:,128])#[128,:]-np.mean(Tseries[128,:])
         for i in range(0,1):
-            X,Diff= self.Call(C,dt,int(regrnum),list2)
+            X,Diff,D= self.Call(C,dt,int(regrnum),list2)
             X_spa.append(X)
             Diffusion.append(Diff)
 
@@ -248,9 +251,15 @@ class KM_Class:
 #        #mp.savefig('Diffusion.png',dpi=300,format='png')
 #        mp.show()
 
+        
+
         Diffusion = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(Diffusion[0]).ravel()}
         df=pd.DataFrame(Diffusion)
         df.to_csv('Diffusion_Raw.csv',index=False, header=False)
+        
+        Drift = {'col1': np.asarray(X_spa[0]).ravel(), 'col2': np.asarray(D[0]).ravel()}
+        df=pd.DataFrame(Drift)
+        df.to_csv('Drift_Raw.csv',index=False, header=False)
 
 #The GGPlot version of X_spa and Diffusion
 #        
@@ -313,7 +322,7 @@ class KM_Class:
         #A=np.reshape(A,(60,2))
         #mp.plot(A[:,0],A[:,1],'o')
         #mp.show()
-        subprocess.call('./Regression.R')
+#        subprocess.call('./Regression.R')
         A=open('lm_diffusion.txt')
         A=A.readlines()
         B=open('lm_drift.txt')
