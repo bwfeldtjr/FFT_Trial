@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Apr 21 10:43:05 2019
+Created on Wed Feb 27 14:40:01 2019
 
-@author: bwfgo
+@author: Brenden
 """
-
 from ggplot import *
 #Next 3 are needed for pyplot plotting
 #import seaborn as sns; #sns.set(color_codes=True)
@@ -18,8 +17,8 @@ import ggplotter as ggp
 from scipy.interpolate import Rbf
 import numpy as np
 from sklearn.neighbors.kde import KernelDensity
-import math
 import scipy as ss
+import math
 
 
 class KM_Class:
@@ -650,73 +649,81 @@ class KM_Class:
         K_meanp=[]
         KL=[]
         I=[]
-        for i in range(len(U)):
-            K3, K4 = zip(*sorted(zip(list(K[i:]), list(K2[i:]))))
-            K3=np.asarray(K3)
-            K_mean.append(K3)
-            
-            K4=np.asarray(K4)
-            #print "This is the shape of np.exp", np.shape(np.exp(logprob1[0:len(logprob1)-1,None]))
-            print (len(np.exp(logprob1[0:len(logprob1),None]).ravel()),len(np.mean(np.asarray(K_meanp),0).ravel()))
-            #qk=np.mean(np.asarray(K_meanp),0).ravel()
-            #pk=np.exp(logprob1[0:len(logprob1),None]).ravel()
-            #print ("This is len",len(qk),len(pk))
-            #logprob1=logprob1[0:len(logprob1)-1,None]
-             
-            K_meanp.append(np.exp(K4))
-            qk=np.mean(np.asarray(K_meanp),0).ravel()
-            pk=np.exp(logprob1[0:len(logprob1),None]).ravel()
-            print ("This is len",len(qk),len(pk))
-            pk=pk[0:len(qk)]
-            KL.append(ss.stats.entropy(pk,qk))
-            I.append(i)
-            if i==1:
-                mp.plot(K3/np.std(K3),np.exp(K4),color='lawngreen',alpha=0.1,label=r'\textbf{Random-generated}')
-            mp.plot(K3/np.std(K3),np.exp(K4),color='lawngreen',alpha=0.1)#,label=r'\textbf{Regenerated}')
-        mp.plot(K1/np.std(K1),np.exp(logprob1),'*',color='red',label=r'\textbf{Raw-data}')#,label=str(tau[i]))
-        mp.ylabel(r'\textbf{Probability Density}',fontsize=20)
-        mp.xlabel(r'\textbf{Velocity/$\sigma$}',fontsize=20)
-        #mp.title(r'\textbf{Probability}')
-        K_mean=np.asarray(K_mean)
-        K_mean=np.mean(K_mean,0)
-        K_meanp=np.asarray(K_meanp)
-        K_meanp=np.mean(K_meanp,0)
-        #print np.shape(K_meanp)
-        DATA=[]
-        DATA2=[]
-        DATA.append(K_mean/np.std(K_mean))
-        DATA.append(K_meanp)
-        DATA2.append(np.asarray(K1/np.std(K1)).ravel())
-        print (np.shape(np.asarray(K1/np.std(K1)).ravel()),np.shape(np.exp(logprob1)))
-        DATA2.append(np.exp(logprob1).ravel())
-        print( DATA2)
-        print( "This is the shape", np.shape(np.asarray(DATA2)))
-        np.savetxt('Data8.txt',np.asarray(DATA))
-        np.savetxt('Raw8.txt',np.asarray(DATA2))
-        mp.plot(K_mean/np.std(K_mean),K_meanp,'+',color='black',label=r'\textbf{Mean}')#s=20,facecolors='none', edgecolors='black',label=r'\textbf{Regenerated-Mean}')#,'+',color='black',label=r'\textbf{Regenerated-Mean}')
-        #mp.xlim([-4,4])
-        mp.legend(loc='best')
-        mp.tight_layout()
-        mp.savefig('Diff4.png',dpi=300,format='png')
         
-        
-        
-        mp.show()    
-        print ("This is the target",ss.stats.entropy((np.exp(logprob1[0:len(logprob1)-1,None])).ravel()))
-        maxKL=np.max(np.asarray(KL[200:]))
-        minKL=np.min(np.asarray(KL[200:]))
-        fil1=np.ones(len(KL[100:]))*maxKL
-        fil2=np.ones(len(KL[100:]))*minKL
-        fil3=np.arange(0,len(KL[100:]))+100
-        mp.fill_between(fil3,fil1,fil2,color='lawngreen')
-        mp.plot(np.asarray(I),np.asarray(KL),'+',color='black',markersize=2)
-        mp.ylabel(r'\textbf{KL-divergence}',fontsize=20)
-        mp.xlabel(r'\textbf{Number of trajectories}',fontsize=20)
-        mp.tight_layout()
-        mp.savefig('KL.png',dpi=300,format='png')
-        mp.show()
-        
-            #K[i+1]=A+B*X[i]+C*X[i]^2+D*X[i]^3
-            #K=sqrt((E+F*X[i]^1+G*X[i]^2)*dt)*rnorm(1)
-            #print(K)
-            #X[i+1]=X[i]+(A+B*X[i]^1+C*X[i]^2+D*X[i]^3)*dt+K#+Tseries1[i]
+###
+###
+### From here down was not working and i'm not sure why
+###
+###        
+#        
+#
+#        for i in range(len(U)):
+#            K3, K4 = zip(*sorted(zip(list(K[i:]), list(K2[i:]))))
+#            K3=np.asarray(K3)
+#            K_mean.append(K3)
+#            
+#            K4=np.asarray(K4)
+#            #print "This is the shape of np.exp", np.shape(np.exp(logprob1[0:len(logprob1)-1,None]))
+#            print (len(np.exp(logprob1[0:len(logprob1),None]).ravel()),len(np.mean(np.asarray(K_meanp),0).ravel()))
+#            #qk=np.mean(np.asarray(K_meanp),0).ravel()
+#            #pk=np.exp(logprob1[0:len(logprob1),None]).ravel()
+#            #print ("This is len",len(qk),len(pk))
+#            #logprob1=logprob1[0:len(logprob1)-1,None]
+#             
+#            K_meanp.append(np.exp(K4))
+#            qk=np.mean(np.asarray(K_meanp),0).ravel()
+#            pk=np.exp(logprob1[0:len(logprob1),None]).ravel()
+#            print ("This is len",len(qk),len(pk))
+#            pk=pk[0:len(qk)]
+#            KL.append(ss.stats.entropy(pk,qk))
+#            I.append(i)
+#            if i==1:
+#                mp.plot(K3/np.std(K3),np.exp(K4),color='lawngreen',alpha=0.1,label=r'\textbf{Random-generated}')
+#            mp.plot(K3/np.std(K3),np.exp(K4),color='lawngreen',alpha=0.1)#,label=r'\textbf{Regenerated}')
+#        mp.plot(K1/np.std(K1),np.exp(logprob1),'*',color='red',label=r'\textbf{Raw-data}')#,label=str(tau[i]))
+#        mp.ylabel(r'\textbf{Probability Density}',fontsize=20)
+#        mp.xlabel(r'\textbf{Velocity/$\sigma$}',fontsize=20)
+#        #mp.title(r'\textbf{Probability}')
+#        K_mean=np.asarray(K_mean)
+#        K_mean=np.mean(K_mean,0)
+#        K_meanp=np.asarray(K_meanp)
+#        K_meanp=np.mean(K_meanp,0)
+#        #print np.shape(K_meanp)
+#        DATA=[]
+#        DATA2=[]
+#        DATA.append(K_mean/np.std(K_mean))
+#        DATA.append(K_meanp)
+#        DATA2.append(np.asarray(K1/np.std(K1)).ravel())
+#        print (np.shape(np.asarray(K1/np.std(K1)).ravel()),np.shape(np.exp(logprob1)))
+#        DATA2.append(np.exp(logprob1).ravel())
+#        print( DATA2)
+#        print( "This is the shape", np.shape(np.asarray(DATA2)))
+#        np.savetxt('Data8.txt',np.asarray(DATA))
+#        np.savetxt('Raw8.txt',np.asarray(DATA2))
+#        mp.plot(K_mean/np.std(K_mean),K_meanp,'+',color='black',label=r'\textbf{Mean}')#s=20,facecolors='none', edgecolors='black',label=r'\textbf{Regenerated-Mean}')#,'+',color='black',label=r'\textbf{Regenerated-Mean}')
+#        #mp.xlim([-4,4])
+#        mp.legend(loc='best')
+#        mp.tight_layout()
+#        mp.savefig('Diff4.png',dpi=300,format='png')
+#        
+#        
+#        
+#        mp.show()    
+#        print ("This is the target",ss.stats.entropy((np.exp(logprob1[0:len(logprob1)-1,None])).ravel()))
+#        maxKL=np.max(np.asarray(KL[200:]))
+#        minKL=np.min(np.asarray(KL[200:]))
+#        fil1=np.ones(len(KL[100:]))*maxKL
+#        fil2=np.ones(len(KL[100:]))*minKL
+#        fil3=np.arange(0,len(KL[100:]))+100
+#        mp.fill_between(fil3,fil1,fil2,color='lawngreen')
+#        mp.plot(np.asarray(I),np.asarray(KL),'+',color='black',markersize=2)
+#        mp.ylabel(r'\textbf{KL-divergence}',fontsize=20)
+#        mp.xlabel(r'\textbf{Number of trajectories}',fontsize=20)
+#        mp.tight_layout()
+#        mp.savefig('KL.png',dpi=300,format='png')
+#        mp.show()
+#        
+#            #K[i+1]=A+B*X[i]+C*X[i]^2+D*X[i]^3
+#            #K=sqrt((E+F*X[i]^1+G*X[i]^2)*dt)*rnorm(1)
+#            #print(K)
+#            #X[i+1]=X[i]+(A+B*X[i]^1+C*X[i]^2+D*X[i]^3)*dt+K#+Tseries1[i]
