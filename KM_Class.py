@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Feb 27 14:40:01 2019
+Created on Sun Apr 21 10:43:05 2019
 
-@author: Brenden
+@author: bwfgo
 """
+
 from ggplot import *
 #Next 3 are needed for pyplot plotting
 #import seaborn as sns; #sns.set(color_codes=True)
@@ -17,13 +18,28 @@ import ggplotter as ggp
 from scipy.interpolate import Rbf
 import numpy as np
 from sklearn.neighbors.kde import KernelDensity
-import subprocess
+import math
 import scipy as ss
 
 
 class KM_Class:
     def exponential_fit(self,x, a, b, c):
         return a*np.exp(-b*x) + c
+
+    def corr(self,Lag,Vec):
+    	Lag=Lag
+    	U_uni1=Vec
+    	#U_uni1=np.mean(U_uni1)
+    	Corr=[]
+    	for i in Lag:
+    		sum1=0
+    		U1=U_uni1[0:(len(Vec)-i)]
+    		U2=U_uni1[(i):len(Vec)]
+    		prod=U1*U2
+    		sum1=(np.mean(prod))/np.std(U_uni1)**2
+    		sum1=sum1
+    		Corr.append(sum1)
+    	return np.asarray(Corr)
 
     def KM(self,C,delta,dt,list2=None):# KM Analysis
     	std1=np.std(C)
@@ -283,6 +299,8 @@ class KM_Class:
         regr.fit(np.asarray(xs).reshape(-1,1), np.asarray(ys).reshape(-1,1))
         y_pred=regr.predict(np.asarray(xs).reshape(-1,1))
         mp.plot(np.asarray(xs),y_pred,color='red',linewidth=4,label=r'\textbf{Fitted}')
+        np.savetxt('lm_diffusion.txt',[2.14029 ,-0.0156312 ,0.0107945])
+        
         #mp.show()
         mp.plot(np.asarray(xs),np.asarray(ys),'o',color='#00FF00',label=r'\textbf{Computed}')
         mp.xlabel(r'\textbf{Velocity-Fluctuations}',fontsize=20)
@@ -298,6 +316,8 @@ class KM_Class:
         regr = make_pipeline(PolynomialFeatures(4), LinearRegression())
         regr.fit(np.asarray(xs1).reshape(-1,1), np.asarray(ys1).reshape(-1,1))
         y_pred=regr.predict(np.asarray(xs1).reshape(-1,1))
+        np.savetxt('lm_drift.txt',[-19.5888, -1.67313, -1.26912, 0.00323181])
+        
         mp.plot(np.asarray(xs1),y_pred,color='red',linewidth=4,label=r'\textbf{Fitted}')
         mp.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         #mp.show()
@@ -346,14 +366,14 @@ class KM_Class:
         Text=intercept(A)
         print (Text[0])
         Text1=intercept(B)
-        Intercept1=Text1[7][1]
-        C11=Text1[8][2]
-        C12=Text1[9][2]
-        C13=Text1[10][2]
+        Intercept1=Text1[3][0]
+        C11=Text1[2][0]
+        C12=Text1[1][0]
+        C13=Text1[0][0]
         #print np.shape(Text1),Text1
-        Intercept= Text[7][1]
-        C1=Text[8][2]
-        C2=Text[9][2]
+        Intercept= Text[2][0]
+        C1=Text[1][0]
+        C2=Text[0][0]
         #C3=Text[10][2]
         print (Intercept, C1, C2)
         Diffusion=np.asarray([Intercept,C1,C2]).ravel()
@@ -447,8 +467,20 @@ class KM_Class:
         	    t=t+dt
         	    time.append(t)
         	    P1=np.sqrt(2*(E+F*X_i**1+G*X_i**2))*np.random.normal(0,1)*(dt*1)**0.5
+        	    if math.isnan(P1):
+        	    	    break
+        	    if np.isneginf(P1):
+        	    	    break
+        	    if np.isposinf(P1):
+        	    	    break
         	    DIFF.append(P1)
         	    P2=(A+B*X_i**1+C*X_i**2+D*X_i**3)
+        	    if math.isnan(P2):
+        	    	    break
+        	    if np.isneginf(P2):
+        	    	    break
+        	    if np.isposinf(P2):
+        	    	    break
         	    DRIF.append(P2)
         	    #if i==0:
         	        #print P1,P2
@@ -605,7 +637,7 @@ class KM_Class:
         #mp.savefig('Au.png',dpi=300,format='png')
         mp.show()
         U1=np.asarray(U1)
-        U1=U1[:,:,0]
+#        U1=U1[:,:]
         #print np.shape(U1)
         #U1=np.mean(U1,0)
         U=np.asarray(U)
@@ -618,8 +650,8 @@ class KM_Class:
         K_meanp=[]
         KL=[]
         I=[]
-        for i in range(len(U[:,0])):
-            K3, K4 = zip(*sorted(zip(list(K[i,:]), list(K2[i,:]))))
+        for i in range(len(U)):
+            K3, K4 = zip(*sorted(zip(list(K[i:]), list(K2[i:]))))
             K3=np.asarray(K3)
             K_mean.append(K3)
             

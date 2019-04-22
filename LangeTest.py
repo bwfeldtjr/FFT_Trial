@@ -1,27 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Apr 21 10:43:06 2019
+Created on Sun Apr 21 11:12:41 2019
 
 @author: bwfgo
 """
 
-import subprocess
+import math
 import numpy as np
 import matplotlib.pyplot as mp
 import pandas as pd
 import scipy as ss
 from sklearn.neighbors.kde import KernelDensity
 from statsmodels.tsa.stattools import acf
-#mp.style.use('ggplot')
-#mp.rcParams['axes.linewidth'] = 2
-#mp.rcParams['text.usetex'] = True
-#mp.rcParams['text.latex.unicode'] = True
-#mp.rcParams['font.family'] = 'serif'
-#mp.rcParams['axes.linewidth'] = 4
-#mp.rcParams['text.latex.preamble'] = [r'\usepackage{sfmath} \boldmath']
-#mp.rcParams.update({'legend.fontsize': 30,
-#          'legend.handlelength': 2})
-#mp.tick_params(axis='both', which='major', labelsize=12)
+
 
 def corr(Lag,Vec):
 	Lag=Lag
@@ -38,18 +29,6 @@ def corr(Lag,Vec):
 		Corr.append(sum1)
 	return np.asarray(Corr)
 
-def spectrum(T,dt1):
-	Tseries_1=T
-	FF=(np.fft.fft(Tseries_1))
-	FF=FF**2
-	N=len(FF)
-	dt=dt1
-	xf = 2*np.pi*np.linspace(0.0, 1.0/(2.0*dt), int(N/2.0))
-	FF=2.0/N*np.abs(FF[:int(N/2.0)])
-	#mp.loglog(xf,FF)
-	#mp.show()
-	return(xf,FF)
-#Original=pd.read_csv('Original.csv')
 def fun():
     df=pd.read_csv('Diffusion_para.csv')
     df2=pd.read_csv('Drift_para.csv')
@@ -83,7 +62,7 @@ def fun():
     D=Drifu[3,1]
     #print A, B, C , D
     mul=1.0
-
+    
     E=Diffu[0,1]
     F=Diffu[1,1]
     G=Diffu[2,1]
@@ -93,7 +72,7 @@ def fun():
     #X
     #sample<- 100/0.01
     X=[]
-
+    
     RAW1=RAW#RAW[0:len(MEAN[:,128]),128]-MEAN[:,128]
     X_i=RAW1[0]
     #np.random.seed(1)
@@ -113,28 +92,40 @@ def fun():
     XT=1#X_i
     #print A,B,C,D,E,F,G
     for i in range(0,len(RAW)-5):
-	    t=t+dt
-	    time.append(t)
-	    P1=np.sqrt(2*(E+F*X_i**1+G*X_i**2))*np.random.normal(0,1)*(dt*1)**0.5
-	    DIFF.append(P1)
-	    P2=(A+B*X_i**1+C*X_i**2+D*X_i**3)
-	    DRIF.append(P2)
-	    #if i==0:
-	        #print P1,P2
-	    X_i=X_i+P2*(dt*1)+P1
-	    
-	    #fluc=X_i/XT
-	    #print fluc
-	    #Temp=Temp+XT*dt+np.sqrt((dt*2*(1.38*10**-23)*274/fluc)+10**-7)*np.random.normal(0,1)
-	    #XT=X_i
-	    #TEMPERA.append(Temp)
-	    #if i==0:
-	    #	print("Added")
-	    #	C1.append(X_i+R0)
-	    #	Temp=X_i+R0
-	    #	X_i=Temp
-	    C1.append(X_i)
-	    #Temp=X_i+Temp
+    	    t=t+dt
+    	    time.append(t)
+    	    P1=np.sqrt(2*(E+F*X_i**1+G*X_i**2))*np.random.normal(0,1)*(dt*1)**0.5
+    	    if math.isnan(P1):
+    	    	    break
+    	    if np.isneginf(P1):
+    	    	    break
+    	    if np.isposinf(P1):
+    	    	    break
+    	    DIFF.append(P1)
+    	    P2=(A+B*X_i**1+C*X_i**2+D*X_i**3)
+    	    if math.isnan(P2):
+    	    	    break
+    	    if np.isneginf(P2):
+    	    	    break
+    	    if np.isposinf(P2):
+    	    	    break
+    	    DRIF.append(P2)
+    	    #if i==0:
+    	        #print P1,P2
+    	    X_i=X_i+P2*(dt*1)+P1
+    	    
+    	    #fluc=X_i/XT
+    	    #print fluc
+    	    #Temp=Temp+XT*dt+np.sqrt((dt*2*(1.38*10**-23)*274/fluc)+10**-7)*np.random.normal(0,1)
+    	    #XT=X_i
+    	    #TEMPERA.append(Temp)
+    	    #if i==0:
+    	    #	print("Added")
+    	    #	C1.append(X_i+R0)
+    	    #	Temp=X_i+R0
+    	    #	X_i=Temp
+    	    C1.append(X_i)
+    	    #Temp=X_i+Temp
     C1=np.asarray(C1)
     #C1=pd.Series(C1)
     #C1=C1.diff()
@@ -143,7 +134,7 @@ def fun():
     
     time=np.asarray(time)
     ACF.append(acf(np.array(C1),nlags=50))
-
+    
     #sp1,sp2=spectrum(C1,dt)
     #sp3,sp4=spectrum(RAW[0:len(C1)],dt)
     #mp.loglog(sp1,sp2,label='Velocity')
@@ -161,7 +152,7 @@ def fun():
     #mp.plot(corr(np.arange(0,len(C1)),C1))
     #mp.plot(corr(np.arange(0,len(RAW)),RAW))
     
-   
+       
     Diffusion=np.sum(0.1*corr(np.arange(0,len(C1)),C1))
     #mp.xlim(0,30)
     #mp.show()
@@ -175,15 +166,15 @@ def fun():
     #mp.xlabel(r'\textbf{Lag}',fontsize=15)
     #mp.legend(loc='best')
     #mp.savefig('Au1.png',dpi=300,format='png')
-
+    
     mp.show()
     #mp.figure(figsize=(30,5))
-
+    
     #mp.plot(D1)
     #mp.show()
     #mp.plot(time,np.array(TEMPERA)+0.1,label=r'\textbf{Regenerated-Temperature}')
     print (len(C1))
-
+    
     mp.plot(C1,color='black',label=r'\textbf{Regenerated-Velocity}')#+MEAN[0:len(C1),128],color='black',label='Regenerated')
     #mp.show()
     mp.plot(RAW[5:])
@@ -197,7 +188,7 @@ def fun():
     #mp.tight_layout()
     #mp.savefig('Timeseres1.png',dpi=300,format='png',transparent=True)
     mp.show()
-    #mp.hist(C1,label='re')
+    mp.hist(C1,label='re')
     #mp.legend(loc='best')
     #mp.show()
     #mp.hist(Original,label='Or')
@@ -214,46 +205,48 @@ def fun():
     #subprocess.call('/home/abhinav/PSI_Data/liquid_metal_ux/RAW_LEARNED_ROM/Density.R')
     tau=[1]
     for i in range(0,len(tau)):
+    
+    
+    	    K=pd.DataFrame(C1)
+    	    #K=K.diff(periods=tau[i])
+    	    #K=K.dropna(axis=0)
+    	    K1=pd.DataFrame(RAW)
+    #	    mp.hist(C1)
+    	    mp.hist(RAW)
+    	    mp.show()
+    	    #K1=K1.diff(periods=tau[i])
+    	    #K1=K1.dropna(axis=0)
+    	    #mean=K.mean(axis=0)
+    	    #mean=mean.values
+    	    #mean=mean.values/(dt*tau[i])
+    	    #Mean.append(np.array(mean))
+    
+    	    K=K.values
+    	    #K=K-mean
+    	    K1=K1.values
+    	    K1=K1.reshape(-1,1)
+    	    K=K.reshape(-1,1)
+    	    print(np.size(K))
+    	    kde = KernelDensity(bandwidth=0.2, kernel='gaussian')
+    
+    	    kde.fit(K[0:np.size(K)])
+    	    
+    	    kde1= KernelDensity(bandwidth=0.2, kernel='gaussian')
+    	    kde1.fit(K1[0:np.size(K1)])
+    
+    	    logprob = kde.score_samples(K[:])
+    	    logprob1 = kde1.score_samples(K1[:])
+    	    ACF=np.asarray(ACF)
+    	    mp.plot(K,np.exp(logprob),'o')
+    	    mp.plot(K1,np.exp(logprob1),'*')
+    	    mp.show()
+    	    #ACF=np.mean(ACF)
+    	    #mp.plot(ACF)
+    	    #mp.plot(acf(RAW,nlags=50))
+    	    #mp.show()
+    	    return (K,K1,logprob,logprob1,acf(C1,nlags=50),R1)
 
 
-	    K=pd.DataFrame(C1)
-	    #K=K.diff(periods=tau[i])
-	    #K=K.dropna(axis=0)
-	    K1=pd.DataFrame(RAW)
-	    mp.hist(C1)
-	    mp.hist(RAW)
-	    mp.show()
-	    #K1=K1.diff(periods=tau[i])
-	    #K1=K1.dropna(axis=0)
-	    #mean=K.mean(axis=0)
-	    #mean=mean.values
-	    #mean=mean.values/(dt*tau[i])
-	    #Mean.append(np.array(mean))
-
-	    K=K.values
-	    #K=K-mean
-	    K1=K1.values
-#	    K1=K1.reshape(-1,1)
-	    K=K.reshape(-1,1)
-	    print(np.size(K))
-	    kde = KernelDensity(bandwidth=0.2, kernel='gaussian')
-
-#	    kde.fit(K[:])
-	    
-	    kde1= KernelDensity(bandwidth=0.2, kernel='gaussian')
-#	    kde1.fit(K1[0:np.size(K1)])
-
-	    logprob = kde.score_samples(K[:])
-	    logprob1 = kde1.score_samples(K1[:])
-	    ACF=np.asarray(ACF)
-	    mp.plot(K,np.exp(logprob),'o')
-	    mp.plot(K1,np.exp(logprob1),'*')
-	    mp.show()
-	    #ACF=np.mean(ACF)
-	    #mp.plot(ACF)
-	    #mp.plot(acf(RAW,nlags=50))
-	    #mp.show()
-	    return (K,K1,logprob,logprob1,acf(C1,nlags=50),R1)
 U=[]
 U1=[]
 ACF1=[]
@@ -264,8 +257,9 @@ for i in range(1,10):
     U1.append(K)
     U.append(logprob)
 ACF1=np.asarray(ACF1)
-print( np.shape(ACF1))
+print(np.shape(ACF1))
 ACF1=np.mean(ACF1,0)
+
 mp.plot(ACF1,'o',color='red',label=r'\textbf{Model}')
 mp.plot(acf(RAW2,nlags=50),color='blue',label=r'\textbf{Data}')
 #mp.plot(acf(np.array(C1),nlags=50),label=r'\textbf{Model}')
@@ -275,7 +269,7 @@ mp.plot(acf(RAW2,nlags=50),color='blue',label=r'\textbf{Data}')
 #mp.savefig('Au.png',dpi=300,format='png')
 mp.show()
 U1=np.asarray(U1)
-U1=U1[:,:,0]
+#        U1=U1[:,:]
 #print np.shape(U1)
 #U1=np.mean(U1,0)
 U=np.asarray(U)
@@ -288,8 +282,8 @@ K_mean=[]
 K_meanp=[]
 KL=[]
 I=[]
-for i in range(len(U[:,0])):
-    K3, K4 = zip(*sorted(zip(list(K[i,:]), list(K2[i,:]))))
+for i in range(len(U)):
+    K3, K4 = zip(*sorted(zip(list(K[i:]), list(K2[i:]))))
     K3=np.asarray(K3)
     K_mean.append(K3)
     
