@@ -614,6 +614,8 @@ class KM_Class:
         	    #mp.plot(ACF)
         	    #mp.plot(acf(RAW,nlags=50))
         	    #mp.show()
+#        	    print(ggp.plotter(K,np.exp(logprob), ln='Yes'))
+#        	    print(ggp.plotter(K1,np.exp(logprob1), ln='Yes'))
         	    return (K,K1,logprob,logprob1,acf(C1,nlags=50),R1)
         U=[]
         U1=[]
