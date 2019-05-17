@@ -190,9 +190,9 @@ class PSD_Class:
 
 #        tes1 = ggplot(aes(x='b',y='a'), data = tauACF) + geom_point()+geom_line() + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-1, high=np.max(tau)+1)
 #        print(tes1)
-        
+
+#Uses plotter
         print(ggp.plotter(tau,ACF,pt='Yes',ln='Yes') + labs(x='tau',y='ACF',title = 'Autocorrelation Function')+xlim(low=-0.1, high=np.max(tau)+1) )
-        
         
 #        print(ACF[10])
 #        osculating = lambda lamb: (ACF[1]-(1-tau[1]**2/lamb))**2
